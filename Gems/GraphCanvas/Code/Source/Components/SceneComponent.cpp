@@ -59,6 +59,41 @@
 
 namespace GraphCanvas
 {
+    static void TEST_printGraph(GraphData& graphData) {
+
+         AZ_Printf("GraphData", "Graph Data");
+        for(auto& node: graphData.m_nodes) {
+            AZ_Printf("GraphData", "Node: %s", node->GetId().ToString().c_str());   
+        }
+        int count = 0;
+        for(auto& connectionEntity: graphData.m_connections) {
+            if(!connectionEntity) {
+                continue;
+            }
+            auto connection = AZ::EntityUtils::FindFirstDerivedComponent<ConnectionComponent>(connectionEntity);
+            if(connection) {
+                const auto& sourceIt = connection->GetSourceEndpoint();
+                const auto& targetIt = connection->GetTargetEndpoint();
+                if(sourceIt.IsValid() && targetIt.IsValid()) {
+                    AZ_Printf("GraphData", "%i -- connection: %s %s --> %s %s", (count++), sourceIt.GetSlotId().ToString().data(), sourceIt.GetNodeId().ToString().data(), targetIt.GetSlotId().ToString().data() , targetIt.GetNodeId().ToString().c_str());
+                }
+            }
+        }
+
+        AZ_Printf("GraphData",  "Endpoint Map")
+
+        for(const auto& en: graphData.m_endpointMap) {
+            const auto& sourceIt = en.first;
+            const auto& targetIt = en.second;
+            if(sourceIt.IsValid() && targetIt.IsValid()) {
+                AZ_Printf("GraphData", "%i -- connection: %i %s --> %i %s", (count++), sourceIt.GetSlotId().ToString().data(), sourceIt.GetNodeId().ToString().data(), targetIt.GetSlotId().ToString().data() , targetIt.GetNodeId().ToString().c_str());
+            }
+                
+        }
+    
+    }
+
+
     ////////////////
     // SceneHelper
     ////////////////
@@ -1800,10 +1835,14 @@ namespace GraphCanvas
                 SlotRequestBus::Event(targetEndpoint.GetSlotId(), &SlotRequests::AddConnectionId, connectionId, sourceEndpoint);
                 SceneNotificationBus::Event(GetEntityId(), &SceneNotifications::OnConnectionAdded, connectionId);
 
+
+                TEST_printGraph(m_graphData);
+
                 return true;
             }
         }
 
+        TEST_printGraph(m_graphData);
         return false;
     }
 
@@ -1846,8 +1885,12 @@ namespace GraphCanvas
             SlotRequestBus::Event(targetEndpoint.GetSlotId(), &SlotRequests::RemoveConnectionId, connectionId, sourceEndpoint);
             SlotRequestBus::Event(sourceEndpoint.GetSlotId(), &SlotRequests::RemoveConnectionId, connectionId, targetEndpoint);
 
+
+            TEST_printGraph(m_graphData);
+
             return true;
         }
+        TEST_printGraph(m_graphData);
 
         return false;
     }

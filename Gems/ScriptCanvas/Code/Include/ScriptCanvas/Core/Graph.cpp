@@ -59,6 +59,38 @@ namespace GraphCpp
 
 namespace ScriptCanvas
 {
+    static void TEST_printGraph_Script(GraphData& graphData) {
+         AZ_Printf("ScriptCanvas", "Graph Script Data");
+        for(auto& node: graphData.m_nodes) {
+            AZ_Printf("ScriptCanvas", "Node: %s", node->GetId().ToString().c_str());   
+        }
+        int count = 0;
+        for(auto& connectionEntity: graphData.m_connections) {
+            if(!connectionEntity) {
+                continue;
+            }
+            auto connection = AZ::EntityUtils::FindFirstDerivedComponent<ScriptCanvas::Connection>(connectionEntity);
+            if(connection) {
+                const auto& sourceIt = connection->GetSourceEndpoint();
+                const auto& targetIt = connection->GetTargetEndpoint();
+                if(sourceIt.IsValid() && targetIt.IsValid()) {
+                    AZ_Printf("ScriptCanvas", "%i -- connection: %s %s --> %s %s", (count++), sourceIt.GetSlotId().ToString().data(), sourceIt.GetNodeId().ToString().data(), targetIt.GetSlotId().ToString().data() , targetIt.GetNodeId().ToString().c_str());
+                }
+            }
+        }
+
+        // AZ_Printf("ScriptCanvas",  "Endpoint Map")
+        // for(const auto& en: graphData.m_endpointMap) {
+        //     const auto& sourceIt = en.first;
+        //     const auto& targetIt = en.second;
+        //     if(sourceIt.IsValid() && targetIt.IsValid()) {
+        //         AZ_Printf("ScriptCanvas", "%i -- connection: %i %s --> %i %s", (count++), sourceIt.GetSlotId(), sourceIt.GetNodeId().ToString().data(), targetIt.GetSlotId() , targetIt.GetNodeId().ToString().c_str());
+        //     }
+                
+        // }
+    
+    }
+
     bool GraphComponentVersionConverter(AZ::SerializeContext& context, AZ::SerializeContext::DataElementNode& componentElementNode)
     {
         if (componentElementNode.GetVersion() < 12)
@@ -98,7 +130,7 @@ namespace ScriptCanvas
     Graph::~Graph()
     {
         GraphRequestBus::Handler::BusDisconnect(GetScriptCanvasId());
-        const bool deleteData{ true };
+        const bool deleteData = true;
         m_graphData.Clear(deleteData);
     }
 
@@ -489,12 +521,15 @@ namespace ScriptCanvas
                         node->SetOwningScriptCanvasId(m_scriptCanvasId);
                         node->Configure();
                         GraphNotificationBus::Event(m_scriptCanvasId, &GraphNotifications::OnNodeAdded, nodeId);
+
+                        TEST_printGraph_Script(m_graphData);
                         return true;
                     }
 
                 }
             }
         }
+        TEST_printGraph_Script(m_graphData);
         return false;
     }
 
@@ -513,10 +548,14 @@ namespace ScriptCanvas
                     GraphNotificationBus::Event(GetScriptCanvasId(), &GraphNotifications::OnNodeRemoved, nodeId);
 
                     RemoveDependentAsset(nodeId);
+
+                    TEST_printGraph_Script(m_graphData);
                     return true;
                 }
             }
         }
+
+        TEST_printGraph_Script(m_graphData);
         return false;
     }
 
@@ -586,11 +625,12 @@ namespace ScriptCanvas
                     {
                         EndpointNotificationBus::Event(connection->GetTargetEndpoint(), &EndpointNotifications::OnEndpointConnected, connection->GetSourceEndpoint());
                     }
-
+                    TEST_printGraph_Script(m_graphData);
                     return true;
                 }
             }
         }
+        TEST_printGraph_Script(m_graphData);
         return false;
     }
 
@@ -668,10 +708,11 @@ namespace ScriptCanvas
                 {
                     EndpointNotificationBus::Event(connection->GetTargetEndpoint(), &EndpointNotifications::OnEndpointDisconnected, connection->GetSourceEndpoint());
                 }
-
+                TEST_printGraph_Script(m_graphData);
                 return true;
             }
         }
+        TEST_printGraph_Script(m_graphData);
         return false;
     }
 

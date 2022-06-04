@@ -150,12 +150,8 @@ namespace AzToolsFramework
                 {
                     for (const AZ::Edit::EnumConstant<ValueType>& constantValue : enumConstantValues)
                     {
-                        enumValues.push_back();
-                        auto& enumValue = enumValues.back();
-                        enumValue.first = constantValue.m_value;
-                        enumValue.second = constantValue.m_description;
+                        enumValues.emplace_back(constantValue.m_value, constantValue.m_description);
                     }
-
                     genericGUI->setElements(enumValues);
                 }
                 else
@@ -167,14 +163,9 @@ namespace AzToolsFramework
                         if (attrValue->Read<AZStd::vector<AZStd::pair<ValueType, const char*> > >(attempt2))
                         {
                             enumValues.reserve(attempt2.size());
-
                             for (const auto& secondPair : attempt2)
                             {
-                                enumValues.push_back();
-                                auto& enumValue = enumValues.back();
-
-                                enumValue.first = secondPair.first;
-                                enumValue.second = secondPair.second;
+                                enumValues.emplace_back(secondPair.first, secondPair.second);
                             }
                         }
                         else

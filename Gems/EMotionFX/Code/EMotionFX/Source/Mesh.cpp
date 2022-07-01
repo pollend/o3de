@@ -8,6 +8,8 @@
 
 #include <AzCore/Math/Vector2.h>
 #include <AzCore/Math/PackedVector3.h>
+#include <AzCore/Math/Color.h>
+#include <AzCore/Math/Vector4.h>
 #include "EMotionFXConfig.h"
 #include "Mesh.h"
 #include "SubMesh.h"
@@ -1606,8 +1608,8 @@ namespace EMotionFX
     void Mesh::ConvertTo32BitColors()
     {
         // get the colors
-        MCore::RGBAColor*   colors128   = (MCore::RGBAColor*)FindOriginalVertexData(Mesh::ATTRIB_COLORS128);
-        uint32*             colors32    = (uint32*)FindOriginalVertexData(Mesh::ATTRIB_COLORS32);
+        AZ::Vector4*   colors128   = static_cast<AZ::Vector4*>(FindOriginalVertexData(Mesh::ATTRIB_COLORS128));
+        AZ::u32*       colors32    = static_cast<AZ::u32*>(FindOriginalVertexData(Mesh::ATTRIB_COLORS32));
 
         // check if 32bit colors already exist or 128bit colors do not exist
         if (colors128 == nullptr || colors32)
@@ -1625,7 +1627,7 @@ namespace EMotionFX
         uint32* data = (uint32*)layer->GetData();
         for (uint32 i = 0; i < numVertices; ++i)
         {
-            data[i] = colors128[i].ToInt();
+            data[i] =  AZ::Color(colors128[i]).ToU32();
         }
 
         // add the new layer

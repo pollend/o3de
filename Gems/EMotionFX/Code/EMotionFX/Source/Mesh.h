@@ -20,7 +20,6 @@
 #include <MCore/Source/Vector.h>
 #include <AzCore/std/containers/vector.h>
 #include <MCore/Source/Ray.h>
-#include <MCore/Source/Color.h>
 
 namespace AZ::RPI
 {

@@ -666,7 +666,7 @@ namespace EMotionFX
         /**
          * Get the inverse bind pose (in world space) transform of a given joint.
          * @param jointIndex The joint number, which must be in range of [0..GetNumNodes()-1].
-         * @result The inverse of the bind pose transform.
+                  * @result The inverse of the bind pose transform.
          */
         MCORE_INLINE const Transform& GetInverseBindPoseTransform(size_t nodeIndex) const                         { return m_invBindPoseTransforms[nodeIndex]; }
 

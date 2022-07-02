@@ -96,6 +96,7 @@ set(FILES
     Tests/MotionInstanceTests.cpp
     Tests/MotionLayerSystemTests.cpp
     Tests/MultiThreadSchedulerTests.cpp
+    Tests/MeshTest.cpp
     Tests/PoseTests.cpp
     Tests/Printers.cpp
     Tests/QuaternionParameterTests.cpp

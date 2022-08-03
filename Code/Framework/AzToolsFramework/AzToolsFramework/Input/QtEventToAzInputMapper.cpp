@@ -476,28 +476,34 @@ namespace AzToolsFramework
         return QPoint{ denormalizedX, denormalizedY };
     }
 
-    void WrapCursorX(const QRect& rect, QPoint& point)
+    static bool WrapCursorX(const QRect& rect, QPoint& point)
     {
-        if (point.x() < rect.left())
+        if (point.x() < rect.left() + 1)
         {
-            point.setX(rect.right() - 1);
+            point.setX(rect.right() - 2);
+            return true;
         }
-        else if (point.x() > rect.right())
+        else if (point.x() > rect.right() - 1)
         {
-            point.setX(rect.left() + 1);
+            point.setX(rect.left() + 2);
+            return true;
         }
+        return false;
     }
 
-    void WrapCursorY(const QRect& rect, QPoint& point)
+    static bool WrapCursorY(const QRect& rect, QPoint& point)
     {
-        if (point.y() < rect.top())
+        if (point.y() < rect.top() + 1)
         {
-            point.setY(rect.bottom() - 1);
+            point.setY(rect.bottom() - 2);
+            return true;
         }
-        else if (point.y() > rect.bottom())
+        else if (point.y() > rect.bottom() - 1)
         {
-            point.setY(rect.top() + 1);
+            point.setY(rect.top() + 2);
+            return true;
         }
+        return false;
     }
 
     void QtEventToAzInputMapper::HandleMouseMoveEvent(const QPoint& globalCursorPosition)
@@ -519,34 +525,41 @@ namespace AzToolsFramework
         case CursorInputMode::CursorModeWrappedY:
         case CursorInputMode::CursorModeWrapped:
             {
-                QPoint screenPos(globalCursorPosition);
+                QPoint wrappedPos(globalCursorPosition);
+                bool isWrapped = false;
                 switch (m_cursorMode)
                 {
                 case CursorInputMode::CursorModeWrappedX:
-                    WrapCursorX(widgetRect, screenPos);
+                    isWrapped = WrapCursorX(widgetRect, wrappedPos);
                     break;
                 case CursorInputMode::CursorModeWrappedY:
-                    WrapCursorY(widgetRect, screenPos);
+                    isWrapped = WrapCursorY(widgetRect, wrappedPos);
                     break;
                 case CursorInputMode::CursorModeWrapped:
-                    WrapCursorX(widgetRect, screenPos);
-                    WrapCursorY(widgetRect, screenPos);
+                    isWrapped = WrapCursorX(widgetRect, wrappedPos);
+                    isWrapped = WrapCursorY(widgetRect, wrappedPos) || isWrapped;
                     break;
                 default:
                     // this should never happen
-                    AZ_Assert(false, "Invalid Curosr Mode: %i.", m_cursorMode);
+                    AZ_Assert(false, "Invalid Cursor Mode: %i.", m_cursorMode);
                     break;
                 }
-                QCursor::setPos(screen, screenPos);
-                const QPoint screenDelta = globalCursorPosition - screenPos;
-                m_previousGlobalCursorPosition = globalCursorPosition - screenDelta;
+                if (isWrapped)
+                {
+                    QCursor::setPos(screen, wrappedPos);
+                    m_previousGlobalCursorPosition = wrappedPos - cursorDelta;
+                }
+                else
+                {
+                    m_previousGlobalCursorPosition = globalCursorPosition;
+                }
             }
             break;
         case CursorInputMode::CursorModeNone:
             m_previousGlobalCursorPosition = globalCursorPosition;
             break;
         default:
-            AZ_Assert(false, "Invalid Curosr Mode: %i.", m_cursorMode);
+            AZ_Assert(false, "Invalid Cursor Mode: %i.", m_cursorMode);
             break;
         }
         ProcessPendingMouseEvents(cursorDelta);

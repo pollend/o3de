@@ -22,9 +22,6 @@ namespace GradientSignal
          */
         static const AZ::EBusHandlerPolicy HandlerPolicy = AZ::EBusHandlerPolicy::Single;
 
-        virtual bool GetUseSystemPointsPerUnit() const = 0;
-        virtual void SetUseSystemPointsPerUnit(bool value) = 0;
-
         virtual float GetPointsPerUnit() const = 0;
         virtual void SetPointsPerUnit(float points) = 0;
 

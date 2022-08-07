@@ -27,7 +27,6 @@ namespace GradientSignal
                 ->Version(1)
                 ->Field("PatternOffset", &DitherGradientConfig::m_patternOffset)
                 ->Field("PatternType", &DitherGradientConfig::m_patternType)
-                ->Field("UseSystemPointsPerUnit", &DitherGradientConfig::m_useSystemPointsPerUnit)
                 ->Field("PointsPerUnit", &DitherGradientConfig::m_pointsPerUnit)
                 ->Field("Gradient", &DitherGradientConfig::m_gradientSampler)
                 ;
@@ -45,14 +44,10 @@ namespace GradientSignal
                     ->EnumAttribute(DitherGradientConfig::BayerPatternType::PATTERN_SIZE_4x4, "4x4")
                     ->EnumAttribute(DitherGradientConfig::BayerPatternType::PATTERN_SIZE_8x8, "8x8")
 
-                    ->ClassElement(AZ::Edit::ClassElements::Group, "Sample Settings")
-                    ->DataElement(AZ::Edit::UIHandlers::CheckBox, &DitherGradientConfig::m_useSystemPointsPerUnit, "Use System Points Per Unit", "Automatically sets points per unit.  Value is equal to Sector Density / Sector Size")
                     ->DataElement(AZ::Edit::UIHandlers::Slider, &DitherGradientConfig::m_pointsPerUnit, "Points Per Unit", "Scales input position before sampling")
-                    ->Attribute(AZ::Edit::Attributes::ReadOnly, &DitherGradientConfig::IsPointsPerUnitResdOnly)
                     ->Attribute(AZ::Edit::Attributes::Min, 0.001f)
                     ->Attribute(AZ::Edit::Attributes::Max, std::numeric_limits<float>::max())
                     ->Attribute(AZ::Edit::Attributes::SoftMax, 100.0f)
-                    ->EndGroup()
 
                     ->DataElement(0, &DitherGradientConfig::m_gradientSampler, "Gradient", "Input gradient whose values will be dithered.")
                     ;
@@ -64,7 +59,6 @@ namespace GradientSignal
             behaviorContext->Class<DitherGradientConfig>()
                 ->Constructor()
                 ->Attribute(AZ::Script::Attributes::Category, "Vegetation")
-                ->Property("useSystemPointsPerUnit", BehaviorValueProperty(&DitherGradientConfig::m_useSystemPointsPerUnit))
                 ->Property("pointsPerUnit", BehaviorValueProperty(&DitherGradientConfig::m_pointsPerUnit))
                 ->Property("patternOffset", BehaviorValueProperty(&DitherGradientConfig::m_patternOffset))
                 ->Property("patternType",
@@ -73,11 +67,6 @@ namespace GradientSignal
                 ->Property("gradientSampler", BehaviorValueProperty(&DitherGradientConfig::m_gradientSampler))
                 ;
         }
-    }
-
-    bool DitherGradientConfig::IsPointsPerUnitResdOnly() const
-    {
-        return m_useSystemPointsPerUnit;
     }
 
     void DitherGradientComponent::GetProvidedServices(AZ::ComponentDescriptor::DependencyArrayType& services)
@@ -115,9 +104,6 @@ namespace GradientSignal
 
             behaviorContext->EBus<DitherGradientRequestBus>("DitherGradientRequestBus")
                 ->Attribute(AZ::Script::Attributes::Category, "Vegetation")
-                ->Event("GetUseSystemPointsPerUnit", &DitherGradientRequestBus::Events::GetUseSystemPointsPerUnit)
-                ->Event("SetUseSystemPointsPerUnit", &DitherGradientRequestBus::Events::SetUseSystemPointsPerUnit)
-                ->VirtualProperty("UseSystemPointsPerUnit", "GetUseSystemPointsPerUnit", "SetUseSystemPointsPerUnit")
                 ->Event("GetPointsPerUnit", &DitherGradientRequestBus::Events::GetPointsPerUnit)
                 ->Event("SetPointsPerUnit", &DitherGradientRequestBus::Events::SetPointsPerUnit)
                 ->VirtualProperty("PointsPerUnit", "GetPointsPerUnit", "SetPointsPerUnit")
@@ -228,12 +214,7 @@ namespace GradientSignal
 
     float DitherGradientComponent::GetCalculatedPointsPerUnit() const
     {
-        float pointsPerUnit = m_configuration.m_pointsPerUnit;
-        if (m_configuration.m_useSystemPointsPerUnit)
-        {
-            SectorDataRequestBus::Broadcast(&SectorDataRequestBus::Events::GetPointsPerMeter, pointsPerUnit);
-        }
-        return AZ::GetMax(pointsPerUnit, 0.0001f);
+        return AZ::GetMax(m_configuration.m_pointsPerUnit, 0.0001f);
     }
 
     float DitherGradientComponent::GetDitherValue(const AZ::Vector3& scaledPosition, float value) const
@@ -308,23 +289,6 @@ namespace GradientSignal
 
     void DitherGradientComponent::OnSectorDataConfigurationUpdated() const
     {
-        LmbrCentral::DependencyNotificationBus::Event(GetEntityId(), &LmbrCentral::DependencyNotificationBus::Events::OnCompositionChanged);
-    }
-
-    bool DitherGradientComponent::GetUseSystemPointsPerUnit() const
-    {
-        return m_configuration.m_useSystemPointsPerUnit;
-    }
-
-    void DitherGradientComponent::SetUseSystemPointsPerUnit(bool value)
-    {
-        // Only hold the lock while we're changing the data. Don't hold onto it during the OnCompositionChanged call, because that can
-        // execute an arbitrary amount of logic, including calls back to this component.
-        {
-            AZStd::unique_lock lock(m_queryMutex);
-            m_configuration.m_useSystemPointsPerUnit = value;
-        }
-
         LmbrCentral::DependencyNotificationBus::Event(GetEntityId(), &LmbrCentral::DependencyNotificationBus::Events::OnCompositionChanged);
     }
 

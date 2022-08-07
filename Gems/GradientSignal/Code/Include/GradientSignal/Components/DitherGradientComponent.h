@@ -32,7 +32,6 @@ namespace GradientSignal
         AZ_CLASS_ALLOCATOR(DitherGradientConfig, AZ::SystemAllocator, 0);
         AZ_RTTI(DitherGradientConfig, "{8F519317-4E83-4CF0-BEC9-C5F3F3198F20}", AZ::ComponentConfig);
         static void Reflect(AZ::ReflectContext* context);
-        bool m_useSystemPointsPerUnit = true;
         float m_pointsPerUnit = 1.0f;
         AZ::Vector3 m_patternOffset = AZ::Vector3::CreateZero();
         enum class BayerPatternType : AZ::u8
@@ -42,7 +41,6 @@ namespace GradientSignal
         };
         BayerPatternType m_patternType = BayerPatternType::PATTERN_SIZE_4x4;
         GradientSampler m_gradientSampler;
-        bool IsPointsPerUnitResdOnly() const;
     };
 
     static const AZ::Uuid DitherGradientComponentTypeId = "{F69E885E-9D43-480D-A549-E5EE503A8F29}";
@@ -86,11 +84,6 @@ namespace GradientSignal
         void OnSectorDataConfigurationUpdated() const override;
 
     protected:
-
-        //////////////////////////////////////////////////////////////////////////
-        // DitheredGradientRequestBus
-        bool GetUseSystemPointsPerUnit() const override;
-        void SetUseSystemPointsPerUnit(bool value) override;
 
         float GetPointsPerUnit() const override;
         void SetPointsPerUnit(float points) override;

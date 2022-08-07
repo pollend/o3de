@@ -229,7 +229,6 @@ namespace UnitTest
         auto entity = CreateTestEntity(shapeHalfBounds);
         GradientSignal::DitherGradientConfig config;
         config.m_gradientSampler.m_gradientId = inputGradientId;
-        config.m_useSystemPointsPerUnit = false;
         // Use a number other than 1.0f for pointsPerUnit to ensure the dither math is getting exercised properly.
         config.m_pointsPerUnit = 0.25f;     
         config.m_patternOffset = AZ::Vector3::CreateZero();

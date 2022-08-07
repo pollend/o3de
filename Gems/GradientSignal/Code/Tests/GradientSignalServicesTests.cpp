@@ -71,7 +71,6 @@ namespace UnitTest
         UnitTest::MockGradientArrayRequestsBus mockGradientRequestsBus(id, inputData, dataSize);
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 1.0f;
         config.m_patternOffset = AZ::Vector3::CreateZero();
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_4x4;
@@ -106,7 +105,6 @@ namespace UnitTest
         UnitTest::MockGradientArrayRequestsBus mockGradientRequestsBus(id, inputData, dataSize);
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 1.0f;
         config.m_patternOffset = AZ::Vector3(-2.0f, 0.0f, 0.0f);
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_4x4;
@@ -139,7 +137,6 @@ namespace UnitTest
         UnitTest::MockGradientArrayRequestsBus mockGradientRequestsBus(id, inputData, dataSize);
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 0.5f;
         config.m_patternOffset = AZ::Vector3::CreateZero();
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_4x4;
@@ -178,7 +175,6 @@ namespace UnitTest
         ActivateEntity(constantGradientEntity.get());
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 2.0f;
         config.m_patternOffset = AZ::Vector3::CreateZero();
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_4x4;
@@ -229,7 +225,6 @@ namespace UnitTest
         UnitTest::MockGradientArrayRequestsBus mockGradientRequestsBus(id, inputData, dataSize);
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 1.0f;
         config.m_patternOffset = AZ::Vector3::CreateZero();
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_4x4;
@@ -267,7 +262,6 @@ namespace UnitTest
         UnitTest::MockGradientArrayRequestsBus mockGradientRequestsBus(id, inputData, dataSize);
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 1.0f;
         config.m_patternOffset = AZ::Vector3::CreateZero();
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_8x8;
@@ -305,7 +299,6 @@ namespace UnitTest
         UnitTest::MockGradientArrayRequestsBus mockGradientRequestsBus(id, inputData, dataSize);
 
         GradientSignal::DitherGradientConfig config;
-        config.m_useSystemPointsPerUnit = false;
         config.m_pointsPerUnit = 1.0f;
         config.m_patternOffset = AZ::Vector3::CreateZero();
         config.m_patternType = GradientSignal::DitherGradientConfig::BayerPatternType::PATTERN_SIZE_8x8;

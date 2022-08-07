@@ -50,6 +50,11 @@ namespace GradientSignal
         */
         virtual float GetValue(const GradientSampleParams& sampleParams) const = 0;
 
+        virtual float GetValue(const AZ::Vector3& position) const 
+        {
+            return GetValue(GradientSampleParams(position));
+        }
+
         /**
          * Given a list of positions, generate values. Implementations of this need to be thread-safe without using locks,
          * as it can get called from multiple threads simultaneously and has the potential to cause lock inversion deadlocks.

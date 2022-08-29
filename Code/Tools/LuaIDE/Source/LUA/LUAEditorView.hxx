@@ -40,7 +40,7 @@ namespace LUAEditor
     
     // this is just a wrapper so we can override close events and so on
     class LUADockWidget 
-        : public QDockWidget
+        : public AzQtComponents::StyledDockWidget
     {
         Q_OBJECT
     public:

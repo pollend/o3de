@@ -13,6 +13,8 @@
 #include <AzCore/base.h>
 #include <AzCore/Memory/SystemAllocator.h>
 #include <AzCore/std/containers/map.h>
+#include <AzQtComponents/Components/FancyDocking.h>
+#include <AzQtComponents/Components/DockMainWindow.h>
 
 #include <AzToolsFramework/AssetBrowser/Search/Filter.h>
 #include <AzToolsFramework/UI/LegacyFramework/UIFrameworkAPI.h>
@@ -77,7 +79,7 @@ namespace LUAEditor
     //////////////////////////////////////////////////////////////////////////
     //Main Window
     class LUAEditorMainWindow
-        : public QMainWindow
+        : public AzQtComponents::DockMainWindow
         , public LUAEditorMainWindowMessages::Handler
         , private LUAEditor::LUABreakpointTrackerMessages::Bus::Handler
         , public LUAViewMessages::Handler
@@ -199,18 +201,15 @@ namespace LUAEditor
         void AddMessageToLog(AzToolsFramework::Logging::LogLine::LogType type, const char* window, const char* message, void* data);
 
     private:
+        AzQtComponents::FancyDocking m_fancyDocking;
         AZStd::string m_currentTabContextMenuUUID;
-
         AZStd::string m_lastOpenFilePath;
-
         AZStd::vector<FindResultsBlockInfo> m_dProcessFindListClicked;
-        void OnDataLoadedAndSet(const DocumentInfo& info, LUAViewWidget* pLUAViewWidget) override;
-
         AzToolsFramework::AssetBrowser::AssetBrowserFilterModel* m_filterModel;
+
         QSharedPointer<AzToolsFramework::AssetBrowser::CompositeFilter> CreateFilter();
-
+        void OnDataLoadedAndSet(const DocumentInfo& info, LUAViewWidget* pLUAViewWidget) override;
         void LogLineSelectionChanged(const AzToolsFramework::Logging::LogLine& logLine);
-
         void OnOptionsMenuRequested();
 
     public:

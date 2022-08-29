@@ -73,11 +73,13 @@ namespace LUAEditor
     //////////////////////////////////////////////////////////////////////////
     //LUAEditorMainWindow
     LUAEditorMainWindow::LUAEditorMainWindow(QStandardItemModel* dataModel, bool connectedState, QWidget* parent, Qt::WindowFlags flags)
-        : QMainWindow(parent, flags)
+        : AzQtComponents::DockMainWindow(parent, flags)
+        , m_fancyDocking(this)
         , m_lastFocusedAssetId()
         , m_ptrFindDialog(nullptr)
         , m_settingsDialog(nullptr)
     {
+
         initSharedResources();
         auto settingsRegistry = AZ::SettingsRegistry::Get();
         AZ::IO::FixedMaxPath engineRootPath;
@@ -490,16 +492,34 @@ namespace LUAEditor
             viewIter = m_dOpenLUAView.find(m_lastFocusedAssetId);
             if (viewIter != m_dOpenLUAView.end())
             {
-                qobject_cast<QMainWindow*>(this->centralWidget())->tabifyDockWidget(viewIter->second.luaDockWidget(), luaDockWidget);
+
+            //     // AzQtComponents::StyledDockWidget* tabWidgetContainer = new AzQtComponents::StyledDockWidget(qobject_cast<QMainWindow*>(this->centralWidget()));
+            //     // tabWidgetContainer->setFloating(false);
+                
+            //    m_fancyDocking.tabifyDockWidget(viewIter->second.luaDockWidget(), luaDockWidget, this);
+            //     //  qobject_cast<QMainWindow*>(this->centralWidget())->addDockWidget(static_cast<Qt::DockWidgetArea>(0x4), luaDockWidget, Qt::Horizontal);
+            //     // qobject_cast<QMainWindow*>(this->centralWidget())->addDockWidget(viewIter->second.luaDockWidget());
+            //     // m_fancyDocking.
+            //     qobject_cast<QMainWindow*>(this->centralWidget())->tabifyDockWidget(viewIter-
+            
+                m_fancyDocking.tabifyDockWidget(viewIter->second.luaDockWidget(), luaDockWidget, this);
+                // qobject_cast<QMainWindow*>(this->centralWidget())->tabifyDockWidget(viewIter->second.luaDockWidget(), luaDockWidget);
+    
+                
             }
             else
             {
+                // m_fancyDocking.createTabWidget(QMainWindow *mainWindow, QDockWidget *widgetToReplace)
+                // m_fancyDocking.createTabWidget(this, luaDockWidget);
                 qobject_cast<QMainWindow*>(this->centralWidget())->addDockWidget(static_cast<Qt::DockWidgetArea>(0x4), luaDockWidget, Qt::Horizontal);
+                // m_fancyDocking.createTabWidget(this, luaDockWidget);
+                
             }
         }
         else
         {
             qobject_cast<QMainWindow*>(this->centralWidget())->addDockWidget(static_cast<Qt::DockWidgetArea>(0x4), luaDockWidget, Qt::Horizontal);
+            // m_fancyDocking.createTabWidget(this, luaDockWidget);
         }
 
         //track it

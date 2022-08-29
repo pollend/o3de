@@ -82,7 +82,7 @@ namespace LUAEditor
     //////////////////////////////////////////////////////////////////////////
     //LUADockWidget
     LUADockWidget::LUADockWidget(QWidget* parent, Qt::WindowFlags flags)
-        : QDockWidget("LUADockWidget", parent, flags)
+        : AzQtComponents::StyledDockWidget("LUADockWidget", parent)
     {
         connect(this, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)), this, SLOT(OnDockLocationChanged(Qt::DockWidgetArea)));
     }

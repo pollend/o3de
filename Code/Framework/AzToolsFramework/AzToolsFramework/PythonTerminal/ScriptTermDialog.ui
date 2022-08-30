@@ -34,6 +34,62 @@
     </widget>
    </item>
    <item>
+    <widget class="QWidget" name="findBar" native="true">
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Find: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditFind">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="findPrevButton">
+        <property name="text">
+         <string>Find Previous</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="findNextButton">
+        <property name="text">
+         <string>Find Next</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QToolButton" name="closeButton">
+        <property name="text">
+         <string/>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QToolButton" name="SCRIPT_HELP">
@@ -53,7 +109,20 @@
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>:/stylesheet/img/UI20/Helpers.svg</normaloff>:/stylesheet/img/UI20/Helpers.svg</iconset>
+         <normaloff>:/stylesheet/img/UI20/Helpers.svg</normaloff>:/stylesheet/img/UI20/Helpers.svg
+        </iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="findButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset>
+         <normaloff>:/stylesheet/img/16x16/Search.png</normaloff>:/stylesheet/img/16x16/Search.png
+        </iconset>
        </property>
       </widget>
      </item>

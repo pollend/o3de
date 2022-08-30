@@ -62,6 +62,7 @@ namespace AzToolsFramework
         void OnScriptHelp();
         void OnOK();
         void OnScriptInputTextChanged(const QString& text);
+        void toggleConsoleSearch();
 
     private:
         void RefreshStyle();

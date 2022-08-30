@@ -18,6 +18,7 @@
 #include <QStringBuilder>
 #include <QToolButton>
 #include <QLineEdit>
+#include <QMenu>
 
 // AzToolsFramework
 #include <AzToolsFramework/API/ViewPaneOptions.h>                   // for AzToolsFramework::ViewPaneOptions
@@ -26,6 +27,7 @@
 
 // AzQtComponents
 #include <AzQtComponents/Components/Widgets/ScrollBar.h>
+#include <qpushbutton.h>
 
 // Editor
 #include "ScriptHelpDialog.h"
@@ -46,6 +48,7 @@ namespace AzToolsFramework
         ui->setupUi(this);
         AzToolsFramework::EditorPythonConsoleNotificationBus::Handler::BusConnect();
 
+        ui->findBar->setVisible(false);
         ui->SCRIPT_INPUT->installEventFilter(this);
 
         connect(ui->SCRIPT_INPUT, &QLineEdit::returnPressed, this, &CScriptTermDialog::OnOK);
@@ -54,6 +57,12 @@ namespace AzToolsFramework
         connect(ui->SCRIPT_DOCS, &QToolButton::clicked, this, []() {
             QDesktopServices::openUrl(QUrl("https://o3de.org/docs/user-guide/scripting/"));
             });
+        connect(ui->SCRIPT_OUTPUT, &ConsoleTextEdit::searchBarRequested, this, [this]
+        {
+            this->ui->findBar->setVisible(true);
+            this->ui->lineEditFind->setFocus();
+        });
+        connect(ui->findButton, &QPushButton::clicked, this, &CScriptTermDialog::toggleConsoleSearch);
 
         InitCompleter();
         RefreshStyle();
@@ -66,6 +75,19 @@ namespace AzToolsFramework
         EditorPreferencesNotificationBus::Handler::BusDisconnect();
         AzToolsFramework::EditorPythonConsoleNotificationBus::Handler::BusDisconnect();
     }
+
+    void CScriptTermDialog::toggleConsoleSearch() 
+    {
+        if(!ui->findBar->isVisible()) {
+            ui->findBar->setVisible(true);
+            ui->lineEditFind->setFocus();
+        }
+        else
+        {
+            ui->findBar->setVisible(false);
+        }
+    }
+
 
     void CScriptTermDialog::RegisterViewClass()
     {

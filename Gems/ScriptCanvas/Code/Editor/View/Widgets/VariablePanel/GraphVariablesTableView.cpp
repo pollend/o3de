@@ -662,24 +662,18 @@ namespace ScriptCanvasEditor
 
             variableId = FindVariableIdForIndex(modelIndex);
 
-            GraphCanvas::GraphCanvasMimeEvent* mimeEvent = nullptr;
-
+            // container.m_mimeEvents.push_back(static_cast<GraphCanvas::GraphCanvasMimeEvent*>(aznew VariableDropNodeMimeEvent(variableId)));
             if (isSet)
             {
-                mimeEvent = aznew CreateSetVariableNodeMimeEvent(variableId);
+                container.m_mimeEvents.push_back(static_cast<GraphCanvas::GraphCanvasMimeEvent*>(aznew CreateSetVariableNodeMimeEvent(variableId)));
             }
             else if (isGet)
             {
-                mimeEvent = aznew CreateGetVariableNodeMimeEvent(variableId);
+                container.m_mimeEvents.push_back(static_cast<GraphCanvas::GraphCanvasMimeEvent*>(aznew CreateGetVariableNodeMimeEvent(variableId)));
             }
             else
             {
-                mimeEvent = aznew CreateVariableSpecificNodeMimeEvent(variableId);
-            }
-
-            if (mimeEvent)
-            {
-                container.m_mimeEvents.push_back(mimeEvent);
+                container.m_mimeEvents.push_back(static_cast<GraphCanvas::GraphCanvasMimeEvent*>(aznew CreateVariableSpecificNodeMimeEvent(variableId)));
             }
         }
 

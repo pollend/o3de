@@ -183,6 +183,24 @@ namespace ScriptCanvasEditor
     };
     // </CreateVariableSpecificNodeMimeEvent>
 
+    class VariableDropNodeMimeEvent
+        : public GraphCanvas::GraphCanvasMimeEvent
+    {
+    public:
+        AZ_RTTI(VariableDropNodeMimeEvent, "{8BFE3E6B-CC71-471D-B6CE-5B2960E084C7}", GraphCanvasMimeEvent);
+        AZ_CLASS_ALLOCATOR(VariableDropNodeMimeEvent, AZ::SystemAllocator, 0);
+
+        static void Reflect(AZ::ReflectContext* reflectContext);
+
+        VariableDropNodeMimeEvent() = default;
+        explicit VariableDropNodeMimeEvent(const ScriptCanvas::VariableId& variableId);
+    ~VariableDropNodeMimeEvent() = default;
+
+        virtual bool ExecuteEvent(const AZ::Vector2& sceneMousePosition, AZ::Vector2& sceneDropPosition, const AZ::EntityId& sceneId) override;
+    private:
+        ScriptCanvas::VariableId m_variableId;
+    };
+
     // <VariableCategoryNodePaletteTreeItem>
     class VariableCategoryNodePaletteTreeItem
         : public GraphCanvas::NodePaletteTreeItem

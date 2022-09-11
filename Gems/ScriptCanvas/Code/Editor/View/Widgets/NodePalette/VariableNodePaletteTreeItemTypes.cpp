@@ -17,6 +17,10 @@
 #include <GraphCanvas/Components/VisualBus.h>
 #include <GraphCanvas/Widgets/GraphCanvasGraphicsView/GraphCanvasGraphicsView.h>
 
+#include <Editor/Include/ScriptCanvas/Bus/EditorScriptCanvasBus.h>
+#include "GraphCanvas/Components/Slots/SlotBus.h"
+#include "GraphCanvas/Utils/GraphUtils.h"
+#include <GraphCanvas/Components/Slots/Extender/ExtenderSlotBus.h>
 #include "VariableNodePaletteTreeItemTypes.h"
 
 #include "Editor/Components/IconComponent.h"
@@ -497,6 +501,66 @@ namespace ScriptCanvasEditor
         mimeEvents.push_back(aznew CreateVariableChangedNodeMimeEvent(m_variableId));
 
         return mimeEvents;
+    }
+    ////////////////////////////////////////
+    // VariableDropNodeMimeEvent
+    ////////////////////////////////////////
+
+    VariableDropNodeMimeEvent::VariableDropNodeMimeEvent(const ScriptCanvas::VariableId& variableId):
+        m_variableId(variableId)
+    {
+
+    }
+
+    void VariableDropNodeMimeEvent::Reflect(AZ::ReflectContext* reflectContext) 
+    {
+        AZ::SerializeContext* serializeContext = azrtti_cast<AZ::SerializeContext*>(reflectContext);
+
+        if (serializeContext)
+        {
+            serializeContext->Class<CreateVariableSpecificNodeMimeEvent, SpecializedCreateNodeMimeEvent>()
+                ->Version(0)
+                ->Field("VariableId", &VariableDropNodeMimeEvent::m_variableId)
+                ;
+        }
+    }
+
+    bool VariableDropNodeMimeEvent::ExecuteEvent([[maybe_unused]] const AZ::Vector2& mousePosition, AZ::Vector2& sceneDropPosition, const AZ::EntityId& graphCanvasGraphId)
+    {
+        ScriptCanvas::ScriptCanvasId scriptCanvasId;
+        GeneralRequestBus::BroadcastResult(scriptCanvasId, &GeneralRequests::GetScriptCanvasId, graphCanvasGraphId);
+
+        AZStd::vector< AZ::EntityId > entitiesAtCursor;
+        GraphCanvas::SceneRequestBus::EventResult(entitiesAtCursor, graphCanvasGraphId, &GraphCanvas::SceneRequests::GetEntitiesAt, sceneDropPosition);
+        for(const auto& entityId : entitiesAtCursor)
+        {
+            if(GraphCanvas::GraphUtils::IsSlotType(entityId, GraphCanvas::SlotTypes::ExtenderSlot))
+            {
+                GraphCanvas::ExtenderSlotRequestBus::Event(entityId, &GraphCanvas::ExtenderSlotRequests::TriggerExtension);
+                return false;
+                // GraphCanvas::Endpoint endpoint;
+                // GraphCanvas::SlotRequestBus::EventResult(endpoint, entityId, &GraphCanvas::SlotRequests::GetEndpoint);
+                
+                // ScriptCanvas::Endpoint scEndpoint;
+                // ScriptCanvasEditor::EditorGraphRequestBus::EventResult(scEndpoint, scriptCanvasId, &ScriptCanvasEditor::EditorGraphRequests::ConvertToScriptCanvasEndpoint, endpoint);
+                // if (scEndpoint.IsValid())
+                // {
+                //     ScriptCanvas::Slot* slot = nullptr;
+                //     ScriptCanvas::GraphRequestBus::EventResult(slot, scriptCanvasId, &ScriptCanvas::GraphRequests::FindSlot, scEndpoint);
+
+
+                //     // ScriptCanvas::Slot* scriptCanvasSlot = nullptr;
+                //     // ScriptCanvas::GraphRequestBus::EventResult(scriptCanvasSlot, scriptCanvasId, &ScriptCanvas::GraphRequests::FindSlot, scEndpoint);
+                    
+
+                    
+                // }
+
+            }
+        }
+
+  
+        return true;
     }
 
     ////////////////////////////////////////

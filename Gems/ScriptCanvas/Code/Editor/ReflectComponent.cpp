@@ -138,6 +138,7 @@ namespace ScriptCanvasEditor
         CreateSetVariableNodeMimeEvent::Reflect(context);
         CreateVariableChangedNodeMimeEvent::Reflect(context);
         CreateVariableSpecificNodeMimeEvent::Reflect(context);
+        VariableDropNodeMimeEvent::Reflect(context);
         CreateFunctionMimeEvent::Reflect(context);
 
         // Script Events

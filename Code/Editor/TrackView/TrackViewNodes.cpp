@@ -1263,7 +1263,7 @@ void CTrackViewNodesCtrl::OnNMRclick(QPoint point)
             inputDialog.setTextValue(oldName);
             inputDialog.setLabelText("");
             inputDialog.SetRegularExpressionValidator("[a-zA-Z0-9_\\-\\_]*");
-
+            inputDialog.setModal(true);
             // Max name length is 512 for a sequence
             constexpr int MaxNameLength = 512;
             inputDialog.SetMaxLength(MaxNameLength);
@@ -1271,54 +1271,63 @@ void CTrackViewNodesCtrl::OnNMRclick(QPoint point)
             // add check for duplicate entity names if this is bound to an Object node
             bool checkForDuplicateName = animNode2->IsBoundToEditorObjects();
 
-            bool retryRename = false;
+            bool isFinished = false;
             QString newName;
-            do
-            {
-                const auto ret = inputDialog.exec();
-
-                if (ret == QDialog::Accepted)
+            connect(
+                &inputDialog,
+                &AzQtComponents::InputDialog::finished,
+                [&isFinished, &newName, &checkForDuplicateName, &oldName, &inputDialog, this](int ret)
                 {
-                    QString name = inputDialog.textValue();
-
-                    // Bail out early if user is trying to rename to the same name, can treat as a no-op
-                    if (name == oldName)
+                    if (ret == QDialog::Accepted)
                     {
-                        return;
-                    }
+                        QString name = inputDialog.textValue();
 
-                    if (checkForDuplicateName)
-                    {
-                        AzToolsFramework::EntitySearchFilter filter;
-                        const auto nameUtf8 = name.toUtf8();
-                        const AZStd::string searchName(nameUtf8.constData(), nameUtf8.length());
-                        filter.m_names.push_back(searchName);
-
-                        AzToolsFramework::EntityIdList matchingEntities;
-                        AzToolsFramework::EditorEntitySearchBus::BroadcastResult(matchingEntities, &AzToolsFramework::EditorEntitySearchRequests::SearchEntities, filter);
-
-                        if (!matchingEntities.empty())
+                        // Bail out early if user is trying to rename to the same name, can treat as a no-op
+                        if (name == oldName)
                         {
-                            QMessageBox::warning(this, tr("Entity already exists"), QString(tr("Entity named '%1' already exists.\n\nPlease choose another unique name.")).arg(name));
+                            isFinished = true;
+                        }
 
-                            retryRename = true;
+                        if (checkForDuplicateName)
+                        {
+                            AzToolsFramework::EntitySearchFilter filter;
+                            const auto nameUtf8 = name.toUtf8();
+                            const AZStd::string searchName(nameUtf8.constData(), nameUtf8.length());
+                            filter.m_names.push_back(searchName);
+
+                            AzToolsFramework::EntityIdList matchingEntities;
+                            AzToolsFramework::EditorEntitySearchBus::BroadcastResult(
+                                matchingEntities, &AzToolsFramework::EditorEntitySearchRequests::SearchEntities, filter);
+
+                            if (!matchingEntities.empty())
+                            {
+                                QMessageBox::warning(
+                                    this,
+                                    tr("Entity already exists"),
+                                    QString(tr("Entity named '%1' already exists.\n\nPlease choose another unique name.")).arg(name));
+                            }
+                            else
+                            {
+                                newName = name;
+                                isFinished = true;
+                            }
                         }
                         else
                         {
                             newName = name;
-                            retryRename = false;
                         }
                     }
                     else
                     {
-                        newName = name;
+                        newName.clear();
+                        isFinished = true;
                     }
-                }
-                else
-                {
-                    retryRename = false;
-                }
-            } while (retryRename);
+                });
+            inputDialog.show();
+            do
+            {
+                QApplication::processEvents();
+            } while (!isFinished);
 
             if (!newName.isEmpty())
             {

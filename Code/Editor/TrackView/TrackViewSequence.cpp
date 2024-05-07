@@ -31,7 +31,6 @@
 #include "Clipboard.h"
 #include "TrackViewSequenceManager.h"
 #include "TrackViewNodeFactories.h"
-#include "Include/IObjectManager.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -135,7 +134,7 @@ CTrackViewKeyHandle CTrackViewSequence::FindSingleSelectedKey()
 
 //////////////////////////////////////////////////////////////////////////
 void CTrackViewSequence::OnEntityComponentPropertyChanged(AZ::ComponentId changedComponentId)
-{  
+{
     // find the component node for this changeComponentId if it exists
     for (int i = m_pAnimSequence->GetNodeCount(); --i >= 0;)
     {
@@ -153,7 +152,7 @@ CTrackViewTrack* CTrackViewSequence::FindTrackById(unsigned int trackId)
 {
     CTrackViewTrack* result = nullptr;
     CTrackViewTrackBundle allTracks = GetAllTracks();
-    
+
     int allTracksCount = allTracks.GetCount();
     for (int trackIndex = 0; trackIndex < allTracksCount; trackIndex++)
     {
@@ -468,7 +467,7 @@ void CTrackViewSequence::OnNodeChanged(CTrackViewNode* node, ITrackViewSequenceL
             {
                 context.Cancel();
             }
-            
+
             // deselect the node
             if (node->IsSelected())
             {
@@ -519,9 +518,9 @@ void CTrackViewSequence::OnNodeChanged(CTrackViewNode* node, ITrackViewSequenceL
     }
 
     // Mark Layer with Sequence Object as dirty for non-internal or non-UI changes
-    if (type != ITrackViewSequenceListener::eNodeChangeType_NodeOwnerChanged && 
+    if (type != ITrackViewSequenceListener::eNodeChangeType_NodeOwnerChanged &&
         type != ITrackViewSequenceListener::eNodeChangeType_Selected &&
-        type != ITrackViewSequenceListener::eNodeChangeType_Deselected && 
+        type != ITrackViewSequenceListener::eNodeChangeType_Deselected &&
         type != ITrackViewSequenceListener::eNodeChangeType_Collapsed &&
         type != ITrackViewSequenceListener::eNodeChangeType_Expanded)
     {
@@ -710,11 +709,11 @@ void CTrackViewSequence::DeleteSelectedNodes()
         }
     }
 
-    // Deactivate the sequence entity while we are potentially removing things from it. 
-    // We need to allow the full removal operation (node and children) to complete before 
+    // Deactivate the sequence entity while we are potentially removing things from it.
+    // We need to allow the full removal operation (node and children) to complete before
     // OnActivate happens on the Sequence again. If we don't deactivate the sequence entity
     // OnActivate will get called by the entity system as components are removed.
-    // In some cases this will erroneously cause some components to be added 
+    // In some cases this will erroneously cause some components to be added
     // back to the sequence that were just deleted.
     bool sequenceEntityWasActive = false;
     AZ::Entity* sequenceEntity = nullptr;
@@ -1262,7 +1261,7 @@ void CTrackViewSequence::OffsetSelectedKeys(const float timeOffset)
 
     CTrackViewKeyBundle selectedKeys = GetSelectedKeys();
 
-    // Set notifyListeners to false and wait until all keys 
+    // Set notifyListeners to false and wait until all keys
     // have been updated, otherwise the indexes in CTrackViewKeyHandle
     // may become invalid after sorted with a new time.
     bool notifyListeners = false;

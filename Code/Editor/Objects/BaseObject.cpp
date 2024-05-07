@@ -26,7 +26,6 @@
 #include "DisplaySettings.h"
 #include "Undo/Undo.h"
 #include "UsedResources.h"
-#include "Objects/ObjectManager.h"
 #include "ViewManager.h"
 #include "IEditorImpl.h"
 #include "GameEngine.h"
@@ -99,7 +98,6 @@ public:
     CUndoAttachBaseObject(CBaseObject* pAttachedObject, bool bKeepPos, bool bAttach)
         : m_attachedObjectGUID(pAttachedObject->GetId())
         , m_parentObjectGUID(pAttachedObject->GetParent()->GetId())
-        , m_bKeepPos(bKeepPos)
         , m_bAttach(bAttach) {}
 
     void Undo([[maybe_unused]] bool bUndo) override
@@ -129,83 +127,35 @@ public:
 private:
     void Attach()
     {
-        CObjectManager* pObjectManager = static_cast<CObjectManager*>(GetIEditor()->GetObjectManager());
-        CBaseObject* pObject = pObjectManager->FindObject(m_attachedObjectGUID);
-        CBaseObject* pParentObject = pObjectManager->FindObject(m_parentObjectGUID);
-
-        if (pObject && pParentObject)
-        {
-            pParentObject->AttachChild(pObject, m_bKeepPos);
-        }
     }
 
     void Detach()
     {
-        CObjectManager* pObjectManager = static_cast<CObjectManager*>(GetIEditor()->GetObjectManager());
-        CBaseObject* pObject = pObjectManager->FindObject(m_attachedObjectGUID);
-
-        if (pObject)
-        {
-            pObject->DetachThis(m_bKeepPos);
-        }
     }
 
     int GetSize() override { return sizeof(CUndoAttachBaseObject); }
 
     GUID m_attachedObjectGUID;
     GUID m_parentObjectGUID;
-    bool m_bKeepPos;
     bool m_bAttach;
 };
 
 //////////////////////////////////////////////////////////////////////////
 CUndoBaseObject::CUndoBaseObject(CBaseObject* obj)
 {
-    // Stores the current state of this object.
-    assert(obj != 0);
-    m_guid = obj->GetId();
-
-    m_redo = nullptr;
-    m_undo = XmlHelpers::CreateXmlNode("Undo");
-    CObjectArchive ar(GetIEditor()->GetObjectManager(), m_undo, false);
-    ar.bUndo = true;
-    obj->Serialize(ar);
 }
 
 //////////////////////////////////////////////////////////////////////////
 QString CUndoBaseObject::GetObjectName()
 {
-    if (CBaseObject* obj = GetIEditor()->GetObjectManager()->FindObject(m_guid))
-    {
-        return obj->GetName();
-    }
     return QString();
 }
 
 //////////////////////////////////////////////////////////////////////////
 void CUndoBaseObject::Undo(bool bUndo)
 {
-    CBaseObject* pObject = GetIEditor()->GetObjectManager()->FindObject(m_guid);
-    if (!pObject)
-    {
-        return;
-    }
-
     GetIEditor()->SuspendUndo();
 
-    if (bUndo)
-    {
-        m_redo = XmlHelpers::CreateXmlNode("Redo");
-        // Save current object state.
-        CObjectArchive ar(GetIEditor()->GetObjectManager(), m_redo, false);
-        ar.bUndo = true;
-        pObject->Serialize(ar);
-    }
-
-    // Undo object state.
-    CObjectArchive ar(GetIEditor()->GetObjectManager(), m_undo, true);
-    ar.bUndo = true;
-    pObject->Serialize(ar);
 
     GetIEditor()->ResumeUndo();
 }
@@ -213,18 +163,6 @@ void CUndoBaseObject::Undo(bool bUndo)
 //////////////////////////////////////////////////////////////////////////
 void CUndoBaseObject::Redo()
 {
-    CBaseObject* pObject = GetIEditor()->GetObjectManager()->FindObject(m_guid);
-    if (!pObject)
-    {
-        return;
-    }
-
-    GetIEditor()->SuspendUndo();
-
-    CObjectArchive ar(GetIEditor()->GetObjectManager(), m_redo, true);
-    ar.bUndo = true;
-
-    pObject->Serialize(ar);
 
     GetIEditor()->ResumeUndo();
 }
@@ -248,52 +186,17 @@ CUndoBaseObjectMinimal::CUndoBaseObjectMinimal(CBaseObject* pObj, [[maybe_unused
 //////////////////////////////////////////////////////////////////////////
 QString CUndoBaseObjectMinimal::GetObjectName()
 {
-    CBaseObject* pObject = GetIEditor()->GetObjectManager()->FindObject(m_guid);
-    if (!pObject)
-    {
-        return QString();
-    }
-
-    return pObject->GetName();
+    return "";
 }
 
 //////////////////////////////////////////////////////////////////////////
 void CUndoBaseObjectMinimal::Undo(bool bUndo)
 {
-    CBaseObject* pObject = GetIEditor()->GetObjectManager()->FindObject(m_guid);
-    if (!pObject)
-    {
-        return;
-    }
-
-    if (bUndo)
-    {
-        m_redoState.pos = pObject->GetPos();
-        m_redoState.scale = pObject->GetScale();
-        m_redoState.rotate = pObject->GetRotation();
-        m_redoState.color = pObject->GetColor();
-        m_redoState.area = pObject->GetArea();
-    }
-
-    SetTransformsFromState(pObject, m_undoState, bUndo);
-
-    pObject->ChangeColor(m_undoState.color);
-    pObject->SetArea(m_undoState.area);
 }
 
 //////////////////////////////////////////////////////////////////////////
 void CUndoBaseObjectMinimal::Redo()
 {
-    CBaseObject* pObject = GetIEditor()->GetObjectManager()->FindObject(m_guid);
-    if (!pObject)
-    {
-        return;
-    }
-
-    SetTransformsFromState(pObject, m_redoState, true);
-
-    pObject->ChangeColor(m_redoState.color);
-    pObject->SetArea(m_redoState.area);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -326,16 +229,6 @@ CBaseObject* CObjectCloneContext::FindClone(CBaseObject* pFromObject)
 //////////////////////////////////////////////////////////////////////////
 GUID CObjectCloneContext::ResolveClonedID(REFGUID guid)
 {
-    CBaseObject* pObject = GetIEditor()->GetObjectManager()->FindObject(guid);
-    CBaseObject* pClonedTarget = FindClone(pObject);
-    if (!pClonedTarget)
-    {
-        pClonedTarget = pObject; // If target not cloned, link to original target.
-    }
-    if (pClonedTarget)
-    {
-        return pClonedTarget->GetId();
-    }
     return GUID_NULL;
 }
 

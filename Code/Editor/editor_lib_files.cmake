@@ -265,7 +265,6 @@ set(FILES
     Include/IEditorClassFactory.h
     Include/ILogFile.h
     Include/IKeyTimeSet.h
-    Include/IObjectManager.h
     Include/IPlugin.h
     Include/IPreferencesPage.h
     Include/ISourceControl.h
@@ -409,8 +408,6 @@ set(FILES
     Objects/ClassDesc.h
     Objects/ObjectLoader.cpp
     Objects/ObjectLoader.h
-    Objects/ObjectManager.cpp
-    Objects/ObjectManager.h
     Objects/ObjectManagerLegacyUndo.cpp
     Objects/ObjectManagerLegacyUndo.h
     Objects/EntityObject.cpp

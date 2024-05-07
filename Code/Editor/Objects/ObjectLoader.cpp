@@ -14,7 +14,6 @@
 // Editor
 #include "Util/PakFile.h"
 #include "WaitProgress.h"
-#include "Include/IObjectManager.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -186,7 +185,7 @@ void CObjectArchive::ResolveObjects()
 
             obj.pObject->CreateGameObject();
 
-            // unset the current validator object because the wait Step 
+            // unset the current validator object because the wait Step
             // might generate unrelated errors
             m_pCurrentErrorReport->SetCurrentValidatorObject(nullptr);
         }

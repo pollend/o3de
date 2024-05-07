@@ -14,7 +14,6 @@
 #include <AzToolsFramework/API/ComponentEntityObjectBus.h>
 
 // Editor
-#include "Include/IObjectManager.h"
 #include "Objects/BaseObject.h"
 #include "Objects/ObjectLoader.h"
 

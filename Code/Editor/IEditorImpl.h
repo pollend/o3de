@@ -127,9 +127,6 @@ public:
     void EnableUpdate(bool enable) override { m_bUpdates = enable; };
     CGameEngine* GetGameEngine() override { return m_pGameEngine; };
     CDisplaySettings* GetDisplaySettings() override { return m_pDisplaySettings; };
-    CBaseObject* NewObject(const char* typeName, const char* fileName = "", const char* name = "", float x = 0.0f, float y = 0.0f, float z = 0.0f, bool modifyDoc = true) override;
-    void DeleteObject(CBaseObject* obj) override;
-    IObjectManager* GetObjectManager() override;
     // This will return a null pointer if CrySystem is not loaded before
     // Global Sandbox Settings are loaded from the registry before CrySystem
     // At that stage GetSettingsManager will return null and xml node in
@@ -283,7 +280,6 @@ protected:
     IFileUtil* m_pFileUtil;
     CClassFactory* m_pClassFactory;
     CEditorCommandManager* m_pCommandManager;
-    CObjectManager* m_pObjectManager;
     CPluginManager* m_pPluginManager;
     CViewManager*   m_pViewManager;
     CUndoManager* m_pUndoManager;

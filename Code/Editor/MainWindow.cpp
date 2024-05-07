@@ -79,7 +79,6 @@
 
 #include "QtViewPaneManager.h"
 #include "ViewPane.h"
-#include "Include/IObjectManager.h"
 #include "Include/Command.h"
 #include "Commands/CommandManager.h"
 #include "SettingsManagerDialog.h"
@@ -318,7 +317,7 @@ MainWindow::MainWindow(QWidget* parent)
     AssetImporterDragAndDropHandler* assetImporterDragAndDropHandler = new AssetImporterDragAndDropHandler(this, m_assetImporterManager);
     connect(assetImporterDragAndDropHandler, &AssetImporterDragAndDropHandler::OpenAssetImporterManager, this, &MainWindow::OnOpenAssetImporterManager);
     connect(assetImporterDragAndDropHandler, &AssetImporterDragAndDropHandler::OpenAssetImporterManagerWithSuggestedPath, this, &MainWindow::OnOpenAssetImporterManagerAtPath);
-        
+
     setFocusPolicy(Qt::StrongFocus);
 
     setAcceptDrops(true);

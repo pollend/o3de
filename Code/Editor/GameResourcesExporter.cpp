@@ -17,7 +17,6 @@
 // Editor
 #include "UsedResources.h"
 #include "GameEngine.h"
-#include "Include/IObjectManager.h"
 #include "WaitProgress.h"
 
 
@@ -130,8 +129,4 @@ void CGameResourcesExporter::Save(const QString& outputDirectory)
 //////////////////////////////////////////////////////////////////////////
 void CGameResourcesExporter::GetFilesFromObjects()
 {
-    CUsedResources rs;
-    GetIEditor()->GetObjectManager()->GatherUsedResources(rs);
-
-    AZStd::copy(rs.files.begin(), rs.files.end(), AZStd::back_inserter(m_files));
 }

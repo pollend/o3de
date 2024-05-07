@@ -20,8 +20,6 @@
 // Editor
 #include "Settings.h"
 #include "Viewport.h"
-#include "Include/IObjectManager.h"
-#include "Objects/ObjectManager.h"
 #include "ViewManager.h"
 #include "AnimationContext.h"
 #include "HitContext.h"

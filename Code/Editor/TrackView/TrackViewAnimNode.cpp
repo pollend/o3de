@@ -35,7 +35,6 @@
 #include "CommentNodeAnimator.h"
 #include "DirectorNodeAnimator.h"
 #include "ViewManager.h"
-#include "Include/IObjectManager.h"
 #include "TrackView/TrackViewDialog.h"
 #include "TrackView/TrackViewSequence.h"
 #include "TrackView/TrackViewUndo.h"
@@ -91,7 +90,7 @@ static void CreateDefaultTracksForEntityNode(CTrackViewAnimNode* node, const AZS
             {
                 for (size_t i = 0; i < tracks.size(); ++i)
                 {
-                    // This is not ideal - we hard-code the VirtualProperty names for "Position", "Rotation", 
+                    // This is not ideal - we hard-code the VirtualProperty names for "Position", "Rotation",
                     // and "Scale" here, which creates an implicitly name dependency, but these are unlikely to change.
                     CAnimParamType paramType = tracks[i];
                     CAnimParamType transformPropertyParamType;
@@ -121,7 +120,7 @@ static void CreateDefaultTracksForEntityNode(CTrackViewAnimNode* node, const AZS
                         transformComponentNode->CreateTrack(transformPropertyParamType);
                     }
                 }
-            } 
+            }
         }
     }
 }
@@ -325,7 +324,7 @@ void CTrackViewAnimNode::UnBindFromEditorObjects()
 
     if (m_animNode)
     {
-        // 'Owner' is the TrackViewNode, as opposed to the EditorEntityNode (as 'owner' is used in animSequence, or the pEntity 
+        // 'Owner' is the TrackViewNode, as opposed to the EditorEntityNode (as 'owner' is used in animSequence, or the pEntity
         // returned from FindAnimNodeOwner() - confusing, isn't it?
         m_animNode->SetNodeOwner(nullptr);
     }
@@ -452,7 +451,7 @@ CTrackViewAnimNode* CTrackViewAnimNode::CreateSubNode(
         }
         else
         {
-            // Search by name for other non AzEntity 
+            // Search by name for other non AzEntity
             alreadyExists = director2->GetAnimNodesByName(name.toUtf8().data()).GetCount() > 0;
         }
 
@@ -630,7 +629,7 @@ void CTrackViewAnimNode::RemoveTrack(CTrackViewTrack* track)
                 }
 
             }
-            undoBatch.MarkEntityDirty(sequence->GetSequenceComponentEntityId());            
+            undoBatch.MarkEntityDirty(sequence->GetSequenceComponentEntityId());
         }
     }
 }
@@ -1500,7 +1499,7 @@ void CTrackViewAnimNode::PasteNodeFromClipboard(AZStd::map<int, IAnimNode*>& cop
 
     AnimNodeType nodeType;
     GetIEditor()->GetMovieSystem()->SerializeNodeType(nodeType, xmlNode, /*bLoading=*/ true, IAnimSequence::kSequenceVersion, m_animSequence->GetFlags());
-    
+
     if (nodeType == AnimNodeType::Component)
     {
         // When pasting Component Nodes, the parent Component Entity Node would have already added all its Components as part of its OnEntityActivated() sync.
@@ -1534,7 +1533,7 @@ void CTrackViewAnimNode::PasteNodeFromClipboard(AZStd::map<int, IAnimNode*>& cop
                     }
                 }
             }
-        }   
+        }
     }
     else
     {
@@ -1756,7 +1755,7 @@ void CTrackViewAnimNode::SetNewParent(CTrackViewAnimNode* newParent)
 
     BindToEditorObjects();
 
-    undoBatch.MarkEntityDirty(sequence->GetSequenceComponentEntityId());    
+    undoBatch.MarkEntityDirty(sequence->GetSequenceComponentEntityId());
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1814,7 +1813,7 @@ void CTrackViewAnimNode::SetPos(const Vec3& position)
         {
             // Offset all keys by move amount.
             Vec3 offset = m_animNode->GetOffsetPosition(position);
-            
+
             track->OffsetKeyPosition(offset);
 
             GetSequence()->OnKeysChanged();
@@ -1835,13 +1834,13 @@ void CTrackViewAnimNode::SetPos(const Vec3& position)
                 m_animNode->SetFlags(flags | eAnimNodeFlags_EntitySelected);
                 m_animNode->SetPos(sequence->GetTime(), position);
                 m_animNode->SetFlags(flags);
-                    
+
                 // We don't want to use ScopedUndoBatch here because we don't want a separate Undo operation
                 // generate for every frame as the user moves an entity.
                 AzToolsFramework::ToolsApplicationRequests::Bus::Broadcast(
-                    &AzToolsFramework::ToolsApplicationRequests::Bus::Events::AddDirtyEntity, 
+                    &AzToolsFramework::ToolsApplicationRequests::Bus::Events::AddDirtyEntity,
                     sequence->GetSequenceComponentEntityId()
-                );                    
+                );
 
                 sequence->OnKeysChanged();
             }
@@ -2089,7 +2088,7 @@ void CTrackViewAnimNode::OnStartPlayInEditor()
     {
         AZ::EntityId remappedId;
         AzToolsFramework::EditorEntityContextRequestBus::Broadcast(&AzToolsFramework::EditorEntityContextRequestBus::Events::MapEditorIdToRuntimeId, m_animSequence->GetSequenceEntityId(), remappedId);
-            
+
         if (remappedId.IsValid())
         {
             // stash and remap the AZ::EntityId of the SequenceComponent entity to restore it when we switch back to Edit mode
@@ -2110,7 +2109,7 @@ void CTrackViewAnimNode::OnStartPlayInEditor()
             m_animNode->SetAzEntityId(remappedId);
         }
     }
-    
+
     if (m_animNode)
     {
         m_animNode->OnStartPlayInEditor();
@@ -2538,10 +2537,10 @@ void CTrackViewAnimNode::OnParentChanged(AZ::EntityId oldParent, AZ::EntityId ne
     }
 }
 
-void CTrackViewAnimNode::OnParentTransformWillChange(AZ::Transform oldTransform, AZ::Transform newTransform) 
-{ 
-    // Only used in circumstances where modified keys are required, but OnParentChanged 
-    // message will not be received for some reason, e.g. node being cloned in memory 
+void CTrackViewAnimNode::OnParentTransformWillChange(AZ::Transform oldTransform, AZ::Transform newTransform)
+{
+    // Only used in circumstances where modified keys are required, but OnParentChanged
+    // message will not be received for some reason, e.g. node being cloned in memory
     UpdateKeyDataAfterParentChanged(oldTransform, newTransform);
 
     CTrackViewSequence* sequence = GetSequence();

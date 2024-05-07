@@ -455,12 +455,6 @@ struct IEditor
     //! Retrieve pointer to game engine instance
     virtual CGameEngine* GetGameEngine() = 0;
     virtual CDisplaySettings* GetDisplaySettings() = 0;
-    //! Create new object
-    virtual CBaseObject* NewObject(const char* typeName, const char* fileName = "", const char* name = "", float x = 0.0f, float y = 0.0f, float z = 0.0f, bool modifyDoc = true) = 0;
-    //! Delete object
-    virtual void DeleteObject(CBaseObject* obj) = 0;
-    //! Get access to object manager.
-    virtual struct IObjectManager* GetObjectManager() = 0;
     virtual CSettingsManager* GetSettingsManager() = 0;
     //! Get Music Manager.
     virtual CMusicManager* GetMusicManager() = 0;

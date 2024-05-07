@@ -26,8 +26,6 @@
 #include "GameEngine.h"
 #include "PythonEditorFuncs.h"
 #include "TrackView/TrackViewPythonFuncs.h"
-#include "Include/IObjectManager.h"
-#include "Objects/ObjectManager.h"
 
 namespace EditorInternal
 {
@@ -124,7 +122,7 @@ namespace EditorInternal
     }
 
     void EditorToolsApplication::QueryApplicationType(AZ::ApplicationTypeQuery& appType) const
-    { 
+    {
         appType.m_maskValue = AZ::ApplicationTypeQuery::Masks::Editor | AZ::ApplicationTypeQuery::Masks::Tool;
     };
 
@@ -212,7 +210,7 @@ namespace EditorInternal
                 return false;
             }
         }
-        
+
         auto previousDocument = GetIEditor()->GetDocument();
         QString previousPathName = (previousDocument != nullptr) ? previousDocument->GetLevelPathName() : "";
         auto newDocument = CCryEditApp::instance()->OpenDocumentFile(levelPath.c_str(), true, COpenSameLevelOptions::ReopenLevelIfSame);

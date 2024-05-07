@@ -45,7 +45,6 @@
 #include "CheckOutDialog.h"
 #include "ISourceControl.h"
 #include "Dialogs/Generic/UserOptions.h"
-#include "Include/IObjectManager.h"
 #include "UsedResources.h"
 #include "Objects/BaseObject.h"
 #include "StringHelpers.h"

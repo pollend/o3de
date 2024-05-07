@@ -22,8 +22,6 @@
 // Editor
 #include "AnimationContext.h"
 #include "GameEngine.h"
-#include "Include/IObjectManager.h"
-#include "Objects/ObjectManager.h"
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -65,7 +63,7 @@ void CTrackViewSequenceManager::OnEditorNotifyEvent(EEditorNotifyEvent event)
         m_bUnloadingLevel = false;
         SortSequences();
         break;
-    }   
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -171,7 +169,7 @@ void CTrackViewSequenceManager::CreateSequence(QString name, [[maybe_unused]] Se
         // restore the Editor selection
         AzToolsFramework::ToolsApplicationRequests::Bus::Broadcast(&AzToolsFramework::ToolsApplicationRequests::Bus::Events::SetSelectedEntities, selectedEntities);
 
-        undoBatch.MarkEntityDirty(newEntityId);        
+        undoBatch.MarkEntityDirty(newEntityId);
     }
 }
 
@@ -327,7 +325,7 @@ void CTrackViewSequenceManager::RenameNode(CTrackViewAnimNode* animNode, const c
 void CTrackViewSequenceManager::RemoveSequenceInternal(CTrackViewSequence* sequence)
 {
     std::unique_ptr<CTrackViewSequence> storedTrackViewSequence;
-    
+
     for (auto iter = m_sequences.begin(); iter != m_sequences.end(); ++iter)
     {
         std::unique_ptr<CTrackViewSequence>& currentSequence = *iter;

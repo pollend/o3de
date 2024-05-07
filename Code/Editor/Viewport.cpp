@@ -26,7 +26,6 @@
 #include "Editor/Plugins/ComponentEntityEditorPlugin/SandboxIntegration.h"
 #include "ViewManager.h"
 #include "Include/HitContext.h"
-#include "Objects/ObjectManager.h"
 #include "Util/3DConnexionDriver.h"
 #include "PluginManager.h"
 #include "GameEngine.h"
@@ -810,7 +809,7 @@ Vec3 QtViewport::MapViewToCP(const QPoint& point, int axis)
 
     Vec3 raySrc(Vec3_Zero), rayDir(Vec3_OneX);
     ViewToWorldRay(point, raySrc, rayDir);
-    
+
     Vec3 v;
 
     Ray ray(raySrc, rayDir);
@@ -1113,7 +1112,7 @@ bool QtViewport::GetAdvancedSelectModeFlag()
 //////////////////////////////////////////////////////////////////////////
 #if defined(AZ_PLATFORM_WINDOWS)
 // Note: Both CreateAnglesYPR and CreateOrientationYPR were copied verbatim from Cry_Camera.h which has been removed.
-// 
+//
 // Description
 //   <PRE>
 //   x-YAW

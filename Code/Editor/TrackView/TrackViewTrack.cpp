@@ -6,7 +6,6 @@
  *
  */
 
-
 #include "EditorDefs.h"
 
 #include "TrackViewTrack.h"
@@ -15,10 +14,9 @@
 #include <CryCommon/Maestro/Types/AnimParamType.h>
 
 // Editor
-#include "TrackViewSequence.h"
 #include "TrackViewNodeFactories.h"
+#include "TrackViewSequence.h"
 #include "TrackViewUndo.h"
-
 
 //////////////////////////////////////////////////////////////////////////
 void CTrackViewTrackBundle::AppendTrack(CTrackViewTrack* pTrack)
@@ -28,9 +26,8 @@ void CTrackViewTrackBundle::AppendTrack(CTrackViewTrack* pTrack)
     {
         const CTrackViewTrack* pLastTrack = m_tracks.back();
 
-        if (pTrack->GetParameterType() != pLastTrack->GetParameterType()
-            || pTrack->GetCurveType() != pLastTrack->GetCurveType()
-            || pTrack->GetValueType() != pLastTrack->GetValueType())
+        if (pTrack->GetParameterType() != pLastTrack->GetParameterType() || pTrack->GetCurveType() != pLastTrack->GetCurveType() ||
+            pTrack->GetValueType() != pLastTrack->GetValueType())
         {
             m_bAllOfSameType = false;
         }
@@ -54,8 +51,8 @@ bool CTrackViewTrackBundle::RemoveTrack(CTrackViewTrack* trackToRemove)
 }
 
 //////////////////////////////////////////////////////////////////////////
-CTrackViewTrack::CTrackViewTrack(IAnimTrack* pTrack, CTrackViewAnimNode* pTrackAnimNode,
-    CTrackViewNode* pParentNode, bool bIsSubTrack, unsigned int subTrackIndex)
+CTrackViewTrack::CTrackViewTrack(
+    IAnimTrack* pTrack, CTrackViewAnimNode* pTrackAnimNode, CTrackViewNode* pParentNode, bool bIsSubTrack, unsigned int subTrackIndex)
     : CTrackViewNode(pParentNode)
     , m_pAnimTrack(pTrack)
     , m_pTrackAnimNode(pTrackAnimNode)
@@ -196,7 +193,6 @@ CTrackViewKeyHandle CTrackViewTrack::GetNextKey(const float time)
 
     return keyHandle;
 }
-
 
 //////////////////////////////////////////////////////////////////////////
 CTrackViewKeyBundle CTrackViewTrack::GetSelectedKeys()
@@ -625,7 +621,6 @@ void CTrackViewTrack::SelectKeys(const bool bSelected)
     m_pTrackAnimNode->GetSequence()->SubmitPendingNotifcations();
 }
 
-
 //////////////////////////////////////////////////////////////////////////
 bool CTrackViewTrack::IsKeySelected(unsigned int keyIndex) const
 {
@@ -698,7 +693,8 @@ void CTrackViewTrack::OnStartPlayInEditor()
     // remap any AZ::EntityId's used in tracks
     if (m_pAnimTrack)
     {
-        // OnStopPlayInEditor clears this as well, but we clear it here in case OnStartPlayInEditor() is called multiple times before OnStopPlayInEditor()
+        // OnStopPlayInEditor clears this as well, but we clear it here in case OnStartPlayInEditor() is called multiple times before
+        // OnStopPlayInEditor()
         m_paramTypeToStashedEntityIdMap.clear();
 
         CAnimParamType trackParamType = m_pAnimTrack->GetParameterType();
@@ -722,7 +718,7 @@ void CTrackViewTrack::OnStartPlayInEditor()
                 else if (paramType == AnimParamType::Sequence)
                 {
                     m_pAnimTrack->GetKey(i, &sequenceKey);
-                    entityIdToRemap = sequenceKey.sequenceEntityId;    
+                    entityIdToRemap = sequenceKey.sequenceEntityId;
                     key = &sequenceKey;
                 }
 
@@ -732,7 +728,8 @@ void CTrackViewTrack::OnStartPlayInEditor()
                 if (entityIdToRemap.IsValid())
                 {
                     AZ::EntityId remappedId;
-                    AzToolsFramework::EditorEntityContextRequestBus::Broadcast(&AzToolsFramework::EditorEntityContextRequestBus::Events::MapEditorIdToRuntimeId, entityIdToRemap, remappedId);
+                    AzToolsFramework::EditorEntityContextRequestBus::Broadcast(
+                        &AzToolsFramework::EditorEntityContextRequestBus::Events::MapEditorIdToRuntimeId, entityIdToRemap, remappedId);
 
                     // remap
                     if (paramType == AnimParamType::Camera)
@@ -744,7 +741,7 @@ void CTrackViewTrack::OnStartPlayInEditor()
                         sequenceKey.sequenceEntityId = remappedId;
                     }
                     m_pAnimTrack->SetKey(i, key);
-                }                
+                }
             }
         }
     }
@@ -817,10 +814,16 @@ void CTrackViewTrack::CopyKeysToClipboard(XmlNodeRef& xmlNode, const bool bOnlyS
     m_pAnimTrack->SerializeSelection(childNode, false, bOnlySelectedKeys);
 }
 
+void CTrackViewTrack::Reflect(AZ::ReflectContext* context)
+{
+    if (auto serializeContext = azrtti_cast<AZ::SerializeContext*>(context))
+    {
+    }
+}
+
 //////////////////////////////////////////////////////////////////////////
 void CTrackViewTrack::PasteKeys(XmlNodeRef xmlNode, const float timeOffset)
 {
-
     CTrackViewSequence* sequence = GetSequence();
     AZ_Assert(sequence, "Expected sequence not to be null.");
 

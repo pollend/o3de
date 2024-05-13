@@ -6,7 +6,6 @@
  *
  */
 
-
 #ifndef CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWTRACK_H
 #define CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWTRACK_H
 #pragma once
@@ -25,11 +24,22 @@ class CTrackViewTrackBundle
 public:
     CTrackViewTrackBundle()
         : m_bAllOfSameType(true)
-        , m_bHasRotationTrack(false) {}
+        , m_bHasRotationTrack(false)
+    {
+    }
 
-    unsigned int GetCount() const { return static_cast<unsigned int>(m_tracks.size()); }
-    CTrackViewTrack* GetTrack(const unsigned int index) { return m_tracks[index]; }
-    const CTrackViewTrack* GetTrack(const unsigned int index) const { return m_tracks[index]; }
+    unsigned int GetCount() const
+    {
+        return static_cast<unsigned int>(m_tracks.size());
+    }
+    CTrackViewTrack* GetTrack(const unsigned int index)
+    {
+        return m_tracks[index];
+    }
+    const CTrackViewTrack* GetTrack(const unsigned int index) const
+    {
+        return m_tracks[index];
+    }
 
     void AppendTrack(CTrackViewTrack* pTrack);
     void AppendTrackBundle(const CTrackViewTrackBundle& bundle);
@@ -37,8 +47,14 @@ public:
     bool RemoveTrack(CTrackViewTrack* pTrackToRemove);
 
     bool IsOneTrack() const;
-    bool AreAllOfSameType() const { return m_bAllOfSameType; }
-    bool HasRotationTrack() const { return m_bHasRotationTrack; }
+    bool AreAllOfSameType() const
+    {
+        return m_bAllOfSameType;
+    }
+    bool HasRotationTrack() const
+    {
+        return m_bHasRotationTrack;
+    }
 
 private:
     bool m_bAllOfSameType;
@@ -51,6 +67,7 @@ class CTrackViewTrackMemento
 {
 private:
     friend class CTrackViewTrack;
+
     XmlNodeRef m_serializedTrackState;
 };
 
@@ -73,8 +90,12 @@ class CTrackViewTrack
     friend class CTrackViewKeyBundle;
 
 public:
-    CTrackViewTrack(IAnimTrack* pTrack, CTrackViewAnimNode* pTrackAnimNode, CTrackViewNode* pParentNode,
-        bool bIsSubTrack = false, unsigned int subTrackIndex = 0);
+    CTrackViewTrack(
+        IAnimTrack* pTrack,
+        CTrackViewAnimNode* pTrackAnimNode,
+        CTrackViewNode* pParentNode,
+        bool bIsSubTrack = false,
+        unsigned int subTrackIndex = 0);
     ~CTrackViewTrack();
 
     CTrackViewAnimNode* GetAnimNode() const;
@@ -83,14 +104,26 @@ public:
     AZStd::string GetName() const override;
 
     // CTrackViewNode
-    virtual ETrackViewNodeType GetNodeType() const override { return eTVNT_Track; }
+    virtual ETrackViewNodeType GetNodeType() const override
+    {
+        return eTVNT_Track;
+    }
 
     // Check for compound/sub track
-    bool IsCompoundTrack() const { return m_bIsCompoundTrack; }
+    bool IsCompoundTrack() const
+    {
+        return m_bIsCompoundTrack;
+    }
 
     // Sub track index
-    bool IsSubTrack() const { return m_bIsSubTrack; }
-    unsigned int GetSubTrackIndex() const { return m_subTrackIndex; }
+    bool IsSubTrack() const
+    {
+        return m_bIsSubTrack;
+    }
+    unsigned int GetSubTrackIndex() const
+    {
+        return m_subTrackIndex;
+    }
 
     // Snap time value to prev/next key in track
     virtual bool SnapTimeToPrevKey(float& time) const override;
@@ -101,7 +134,10 @@ public:
     bool GetExpanded() const override;
 
     // Key getters
-    virtual unsigned int GetKeyCount() const override { return m_pAnimTrack->GetNumKeys(); }
+    virtual unsigned int GetKeyCount() const override
+    {
+        return m_pAnimTrack->GetNumKeys();
+    }
     virtual CTrackViewKeyHandle GetKey(unsigned int index) override;
     virtual CTrackViewKeyConstHandle GetKey(unsigned int index) const;
 
@@ -119,13 +155,13 @@ public:
     void UpdateKeyDataAfterParentChanged(const AZ::Transform& oldParentWorldTM, const AZ::Transform& newParentWorldTM);
 
     // Value getters
-    template <class Type>
+    template<class Type>
     void GetValue(const float time, Type& value, bool applyMultiplier) const
     {
-        assert (m_pAnimTrack.get());
+        assert(m_pAnimTrack.get());
         return m_pAnimTrack->GetValue(time, value, applyMultiplier);
     }
-    template <class Type>
+    template<class Type>
     void GetValue(const float time, Type& value) const
     {
         assert(m_pAnimTrack.get());
@@ -135,18 +171,33 @@ public:
     void GetKeyValueRange(float& min, float& max) const;
 
     // Type getters
-    const CAnimParamType& GetParameterType() const { return m_pAnimTrack->GetParameterType(); }
-    AnimValueType GetValueType() const { return m_pAnimTrack->GetValueType(); }
-    EAnimCurveType GetCurveType() const { return m_pAnimTrack->GetCurveType(); }
+    const CAnimParamType& GetParameterType() const
+    {
+        return m_pAnimTrack->GetParameterType();
+    }
+    AnimValueType GetValueType() const
+    {
+        return m_pAnimTrack->GetValueType();
+    }
+    EAnimCurveType GetCurveType() const
+    {
+        return m_pAnimTrack->GetCurveType();
+    }
 
     // Mask
-    bool IsMasked(uint32 mask) const { return m_pAnimTrack->IsMasked(mask); }
+    bool IsMasked(uint32 mask) const
+    {
+        return m_pAnimTrack->IsMasked(mask);
+    }
 
     // Flag getter
     IAnimTrack::EAnimTrackFlags GetFlags() const;
 
     // Spline getter
-    ISplineInterpolator* GetSpline() const { return m_pAnimTrack->GetSpline(); }
+    ISplineInterpolator* GetSpline() const
+    {
+        return m_pAnimTrack->GetSpline();
+    }
 
     // Color
     ColorB GetCustomColor() const;
@@ -155,6 +206,7 @@ public:
     void ClearCustomColor();
 
     // Memento
+
     virtual CTrackViewTrackMemento GetMemento() const;
     virtual void RestoreFromMemento(const CTrackViewTrackMemento& memento);
 
@@ -167,7 +219,10 @@ public:
     bool IsMuted() const;
 
     // Returns if the contained AnimTrack responds to muting
-    bool UsesMute() const { return m_pAnimTrack.get() ? m_pAnimTrack->UsesMute() : false; }
+    bool UsesMute() const
+    {
+        return m_pAnimTrack.get() ? m_pAnimTrack->UsesMute() : false;
+    }
 
     // Key selection
     virtual void SelectKeys(const bool bSelected) override;
@@ -176,7 +231,10 @@ public:
     void PasteKeys(XmlNodeRef xmlNode, const float timeOffset);
 
     // Key types
-    virtual bool AreAllKeysOfSameType() const override { return true; }
+    virtual bool AreAllKeysOfSameType() const override
+    {
+        return true;
+    }
 
     // Animation layer index
     void SetAnimationLayerIndex(const int index);
@@ -188,7 +246,10 @@ public:
     void OnStopPlayInEditor() override;
     //~AzToolsFramework::EditorEntityContextNotificationBus implementation
 
-    IAnimTrack* GetAnimTrack() const { return m_pAnimTrack.get(); }
+    IAnimTrack* GetAnimTrack() const
+    {
+        return m_pAnimTrack.get();
+    }
 
     unsigned int GetId() const
     {
@@ -199,6 +260,9 @@ public:
     {
         m_pAnimTrack->SetId(id);
     }
+
+    // Required Reflect function.
+    static void Reflect(AZ::ReflectContext* context);
 
 private:
     CTrackViewKeyHandle GetPrevKey(const float time);
@@ -233,6 +297,6 @@ private:
     CTrackViewAnimNode* m_pTrackAnimNode;
 
     // used to stash AZ Entity ID's stored in track keys when entering/exiting AI/Physic or Ctrl-G game modes
-    AZStd::unordered_map<CAnimParamType, AZStd::vector<AZ::EntityId>> m_paramTypeToStashedEntityIdMap;  
+    AZStd::unordered_map<CAnimParamType, AZStd::vector<AZ::EntityId>> m_paramTypeToStashedEntityIdMap;
 };
 #endif // CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWTRACK_H

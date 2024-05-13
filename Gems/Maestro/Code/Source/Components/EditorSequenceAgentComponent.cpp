@@ -135,7 +135,7 @@ namespace Maestro
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     void EditorSequenceAgentComponent::DisconnectSequence()
-    {   
+    {
         const Maestro::SequenceAgentEventBusId* busIdToDisconnect = SequenceAgentComponentRequestBus::GetCurrentBusId();
 
         if (!busIdToDisconnect)
@@ -165,7 +165,7 @@ namespace Maestro
         AZ::EntityId curEntityId = GetEntityId();
 
         // remove this SequenceAgent from this entity if no sequenceComponents are connected to it
-        AzToolsFramework::EntityCompositionRequestBus::Broadcast(&AzToolsFramework::EntityCompositionRequests::RemoveComponents, AZ::Entity::ComponentArrayType{this});        
+        AzToolsFramework::EntityCompositionRequestBus::Broadcast(&AzToolsFramework::EntityCompositionRequests::RemoveComponents, AZ::Entity::ComponentArrayType{this});
 
         // Let any currently-active undo operations know that this entity has changed state.
         auto undoCacheInterface = AZ::Interface<AzToolsFramework::UndoSystem::UndoCacheInterface>::Get();
@@ -216,7 +216,7 @@ namespace Maestro
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////
     void EditorSequenceAgentComponent::GetAllAnimatableProperties(IAnimNode::AnimParamInfos& properties, AZ::ComponentId componentId)
-    {       
+    {
         // add all properties found during Activate() that match the given componentId
         for (auto propertyIter = m_addressToBehaviorVirtualPropertiesMap.begin(); propertyIter != m_addressToBehaviorVirtualPropertiesMap.end(); propertyIter++)
         {
@@ -233,6 +233,12 @@ namespace Maestro
                 // to the eAnimParamType enum - this leaves the paramType name unchanged but changes the type.
                 for (int i = static_cast<int>(virtualProperty->m_getter->m_attributes.size()); --i >= 0;)
                 {
+               //     if(virtualProperty->m_getter->m_attributes[i].second->RTTI_IsTypeOf(AZ::Color::TYPEINFO_Uuid())){
+
+               //         paramInfo.paramType = AnimParamType::Co;
+               //         break;
+               //     }
+               //     else
                     if (virtualProperty->m_getter->m_attributes[i].first == AZ::Edit::Attributes::PropertyPosition)
                     {
                         paramInfo.paramType = AnimParamType::Position;
@@ -272,7 +278,7 @@ namespace Maestro
             auto findIter = appendedComponentIds.find(address->first.GetComponentId());
             if (findIter == appendedComponentIds.end())
             {
-                animatableComponentIds.push_back(address->first.GetComponentId());   
+                animatableComponentIds.push_back(address->first.GetComponentId());
                 appendedComponentIds.insert(address->first.GetComponentId());
             }
         }

@@ -380,7 +380,7 @@ AZ::Quaternion CAnimComponentNode::TransformFromWorldToLocalRotation(const AZ::Q
     GetParentWorldTransform(parentTransform);
     parentTransform.ExtractUniformScale();
     parentTransform.Invert();
-    
+
     rotTransform = parentTransform * rotTransform;
     return rotTransform.GetRotation();
 }
@@ -640,6 +640,11 @@ void CAnimComponentNode::AddPropertyToParamInfoMap(const CAnimParamType& paramTy
 
         Maestro::SequenceComponentRequestBus::EventResult(propertyTypeId, m_pSequence->GetSequenceEntityId(), &Maestro::SequenceComponentRequestBus::Events::GetAnimatedAddressTypeId,
             GetParentAzEntityId(), propertyAddress);
+
+
+        AZStd::string str;
+        propertyTypeId.ToString(str);
+        AZ_Printf("CAnimComponentNode","%s id: %s\n", propertyInfo.m_displayName.c_str(), str.c_str());
 
         if (propertyTypeId == AZ::Vector3::TYPEINFO_Uuid())
         {

@@ -6,13 +6,12 @@
  *
  */
 
-
 #ifndef CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWSEQUENCE_H
 #define CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWSEQUENCE_H
 #pragma once
 
-#include <IEditor.h>
 #include "IMovieSystem.h"
+#include <IEditor.h>
 
 #include <AzToolsFramework/UI/PropertyEditor/PropertyEditorAPI.h>
 
@@ -22,7 +21,9 @@
 struct ITrackViewSequenceListener
 {
     // Called when sequence settings (time range, flags) have changed
-    virtual void OnSequenceSettingsChanged([[maybe_unused]] CTrackViewSequence* pSequence) {}
+    virtual void OnSequenceSettingsChanged([[maybe_unused]] CTrackViewSequence* pSequence)
+    {
+    }
 
     enum ENodeChangeType
     {
@@ -43,28 +44,44 @@ struct ITrackViewSequenceListener
     };
 
     // Called when a node is changed
-    virtual void OnNodeChanged([[maybe_unused]] CTrackViewNode* pNode, [[maybe_unused]] ENodeChangeType type) {}
+    virtual void OnNodeChanged([[maybe_unused]] CTrackViewNode* pNode, [[maybe_unused]] ENodeChangeType type)
+    {
+    }
 
     // Called when a node is added
-    virtual void OnNodeRenamed([[maybe_unused]] CTrackViewNode* pNode, [[maybe_unused]] const char* pOldName) {}
+    virtual void OnNodeRenamed([[maybe_unused]] CTrackViewNode* pNode, [[maybe_unused]] const char* pOldName)
+    {
+    }
 
     // Called when selection of nodes changed
-    virtual void OnNodeSelectionChanged([[maybe_unused]] CTrackViewSequence* pSequence) {}
+    virtual void OnNodeSelectionChanged([[maybe_unused]] CTrackViewSequence* pSequence)
+    {
+    }
 
     // Called when selection of keys changed.
-    virtual void OnKeySelectionChanged([[maybe_unused]] CTrackViewSequence* pSequence) {}
+    virtual void OnKeySelectionChanged([[maybe_unused]] CTrackViewSequence* pSequence)
+    {
+    }
 
     // Called when keys in a track changed
-    virtual void OnKeysChanged([[maybe_unused]] CTrackViewSequence* pSequence) {}
+    virtual void OnKeysChanged([[maybe_unused]] CTrackViewSequence* pSequence)
+    {
+    }
 
     // Called when a new key is added to a track
-    virtual void OnKeyAdded([[maybe_unused]] CTrackViewKeyHandle& addedKeyHandle) {}
+    virtual void OnKeyAdded([[maybe_unused]] CTrackViewKeyHandle& addedKeyHandle)
+    {
+    }
 };
 
 struct ITrackViewSequenceManagerListener
 {
-    virtual void OnSequenceAdded([[maybe_unused]] CTrackViewSequence* pSequence) {}
-    virtual void OnSequenceRemoved([[maybe_unused]] CTrackViewSequence* pSequence) {}
+    virtual void OnSequenceAdded([[maybe_unused]] CTrackViewSequence* pSequence)
+    {
+    }
+    virtual void OnSequenceRemoved([[maybe_unused]] CTrackViewSequence* pSequence)
+    {
+    }
 };
 
 ////////////////////////////////////////////////////////////////////////////
@@ -91,6 +108,7 @@ class CTrackViewSequence
     friend class CUndoAnimNodeReparent;
     friend class CUndoTrackObject;
     friend class CUndoComponentEntityTrackObject;
+    friend class TrackViewUndoCommand;
 
 public:
     CTrackViewSequence(IAnimSequence* pSequence);
@@ -101,11 +119,20 @@ public:
     void Load() override;
 
     // ITrackViewNode
-    ETrackViewNodeType GetNodeType() const override { return eTVNT_Sequence; }
+    ETrackViewNodeType GetNodeType() const override
+    {
+        return eTVNT_Sequence;
+    }
 
-    AZStd::string GetName() const override { return m_pAnimSequence->GetName(); }
+    AZStd::string GetName() const override
+    {
+        return m_pAnimSequence->GetName();
+    }
     bool SetName(const char* pName) override;
-    bool CanBeRenamed() const override { return true; }
+    bool CanBeRenamed() const override
+    {
+        return true;
+    }
 
     // Binding/Unbinding
     void BindToEditorObjects() override;
@@ -125,7 +152,10 @@ public:
     IAnimSequence::EAnimSequenceFlags GetFlags() const;
 
     // Get sequence object in scene
-    AZ::EntityId     GetSequenceComponentEntityId() const { return m_pAnimSequence.get() ? m_pAnimSequence->GetSequenceEntityId() : AZ::EntityId(); }
+    AZ::EntityId GetSequenceComponentEntityId() const
+    {
+        return m_pAnimSequence.get() ? m_pAnimSequence->GetSequenceEntityId() : AZ::EntityId();
+    }
 
     // Check if this node belongs to a sequence
     bool IsAncestorOf(CTrackViewSequence* pSequence) const;
@@ -134,46 +164,112 @@ public:
     CTrackViewKeyHandle FindSingleSelectedKey();
 
     // Get CryMovie sequence ID
-    uint32 GetCryMovieId() const { return m_pAnimSequence->GetId(); }
+    uint32 GetCryMovieId() const
+    {
+        return m_pAnimSequence->GetId();
+    }
 
     // Rendering
     void Render(const SAnimContext& animContext) override;
 
     // Playback control
     void Animate(const SAnimContext& animContext) override;
-    void Resume() { m_pAnimSequence->Resume(); }
-    void Pause() { m_pAnimSequence->Pause(); }
-    void StillUpdate() { m_pAnimSequence->StillUpdate(); }
+    void Resume()
+    {
+        m_pAnimSequence->Resume();
+    }
+    void Pause()
+    {
+        m_pAnimSequence->Pause();
+    }
+    void StillUpdate()
+    {
+        m_pAnimSequence->StillUpdate();
+    }
 
-    void OnLoop() { m_pAnimSequence->OnLoop(); }
+    void OnLoop()
+    {
+        m_pAnimSequence->OnLoop();
+    }
 
     // Active & deactivate
-    void Activate() { m_pAnimSequence->Activate(); }
-    void Deactivate() { m_pAnimSequence->Deactivate(); }
-    void PrecacheData(const float time) { m_pAnimSequence->PrecacheData(time); }
+    void Activate()
+    {
+        m_pAnimSequence->Activate();
+    }
+    void Deactivate()
+    {
+        m_pAnimSequence->Deactivate();
+    }
+    void PrecacheData(const float time)
+    {
+        m_pAnimSequence->PrecacheData(time);
+    }
 
     // Begin & end cut scene
     void BeginCutScene(const bool bResetFx) const;
     void EndCutScene() const;
 
     // Reset
-    void Reset(const bool bSeekToStart) { m_pAnimSequence->Reset(bSeekToStart); }
-    void ResetHard() { m_pAnimSequence->ResetHard(); }
+    void Reset(const bool bSeekToStart)
+    {
+        m_pAnimSequence->Reset(bSeekToStart);
+    }
+    void ResetHard()
+    {
+        m_pAnimSequence->ResetHard();
+    }
 
-    void TimeChanged(float newTime) { m_pAnimSequence->TimeChanged(newTime); }
+    void TimeChanged(float newTime)
+    {
+        m_pAnimSequence->TimeChanged(newTime);
+    }
 
     // Check if it's a group node
-    bool IsGroupNode() const override { return true; }
+    bool IsGroupNode() const override
+    {
+        return true;
+    }
 
     // Track Events (TODO: Undo?)
-    int GetTrackEventsCount() const      { return m_pAnimSequence->GetTrackEventsCount(); }
-    const char* GetTrackEvent(int index) { return m_pAnimSequence->GetTrackEvent(index); }
-    bool AddTrackEvent(const char* szEvent)                            { MarkAsModified(); return m_pAnimSequence->AddTrackEvent(szEvent); }
-    bool RemoveTrackEvent(const char* szEvent)                         { MarkAsModified(); return m_pAnimSequence->RemoveTrackEvent(szEvent); }
-    bool RenameTrackEvent(const char* szEvent, const char* szNewEvent) { MarkAsModified(); return m_pAnimSequence->RenameTrackEvent(szEvent, szNewEvent); }
-    bool MoveUpTrackEvent(const char* szEvent)                         { MarkAsModified(); return m_pAnimSequence->MoveUpTrackEvent(szEvent); }
-    bool MoveDownTrackEvent(const char* szEvent)                       { MarkAsModified(); return m_pAnimSequence->MoveDownTrackEvent(szEvent); }
-    void ClearTrackEvents()                                            { MarkAsModified(); m_pAnimSequence->ClearTrackEvents(); }
+    int GetTrackEventsCount() const
+    {
+        return m_pAnimSequence->GetTrackEventsCount();
+    }
+    const char* GetTrackEvent(int index)
+    {
+        return m_pAnimSequence->GetTrackEvent(index);
+    }
+    bool AddTrackEvent(const char* szEvent)
+    {
+        MarkAsModified();
+        return m_pAnimSequence->AddTrackEvent(szEvent);
+    }
+    bool RemoveTrackEvent(const char* szEvent)
+    {
+        MarkAsModified();
+        return m_pAnimSequence->RemoveTrackEvent(szEvent);
+    }
+    bool RenameTrackEvent(const char* szEvent, const char* szNewEvent)
+    {
+        MarkAsModified();
+        return m_pAnimSequence->RenameTrackEvent(szEvent, szNewEvent);
+    }
+    bool MoveUpTrackEvent(const char* szEvent)
+    {
+        MarkAsModified();
+        return m_pAnimSequence->MoveUpTrackEvent(szEvent);
+    }
+    bool MoveDownTrackEvent(const char* szEvent)
+    {
+        MarkAsModified();
+        return m_pAnimSequence->MoveDownTrackEvent(szEvent);
+    }
+    void ClearTrackEvents()
+    {
+        MarkAsModified();
+        m_pAnimSequence->ClearTrackEvents();
+    }
 
     // Deletes all selected nodes (re-parents childs if group node gets deleted)
     void DeleteSelectedNodes();
@@ -196,7 +292,10 @@ public:
     bool IsActiveSequence() const;
 
     // The root sequence node is always an active director
-    bool IsActiveDirector() const override { return true; }
+    bool IsActiveDirector() const override
+    {
+        return true;
+    }
 
     // Copy keys to clipboard (in XML form)
     void CopyKeysToClipboard(const bool bOnlySelectedKeys, const bool bOnlyFromSelectedTracks);
@@ -210,7 +309,8 @@ public:
     // Returns a vector of pairs that match the XML track nodes in the clipboard to the tracks in the sequence for pasting.
     // It is used by PasteKeysFromClipboard directly and to preview the locations of the to be pasted keys.
     typedef std::pair<CTrackViewTrack*, XmlNodeRef> TMatchedTrackLocation;
-    std::vector<TMatchedTrackLocation> GetMatchedPasteLocations(XmlNodeRef clipboardContent, CTrackViewAnimNode* pTargetNode, CTrackViewTrack* pTargetTrack);
+    std::vector<TMatchedTrackLocation> GetMatchedPasteLocations(
+        XmlNodeRef clipboardContent, CTrackViewAnimNode* pTargetNode, CTrackViewTrack* pTargetTrack);
 
     // Adjust the time range
     void AdjustKeysToTimeRange(Range newTimeRange);
@@ -247,7 +347,7 @@ public:
     void MarkAsModified() override;
     // ~IAnimNodeOwner
 
-    SequenceType GetSequenceType() const 
+    SequenceType GetSequenceType() const
     {
         if (m_pAnimSequence.get())
         {
@@ -369,7 +469,7 @@ public:
         if (m_pSequence)
         {
             m_pSequence->DequeueNotifications();
-        }        
+        }
         m_pSequence = nullptr;
     }
 

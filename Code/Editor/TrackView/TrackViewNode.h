@@ -6,32 +6,36 @@
  *
  */
 
-
 #ifndef CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWNODE_H
 #define CRYINCLUDE_EDITOR_TRACKVIEW_TRACKVIEWNODE_H
 #pragma once
-
 
 class CTrackViewTrack;
 class CTrackViewSequence;
 struct IKey;
 class CTrackViewAnimNode;
 
-
 class CTrackViewKeyConstHandle
 {
 public:
     CTrackViewKeyConstHandle()
         : m_keyIndex(0)
-        , m_pTrack(nullptr) {}
+        , m_pTrack(nullptr)
+    {
+    }
 
     CTrackViewKeyConstHandle(const CTrackViewTrack* pTrack, unsigned int keyIndex)
         : m_keyIndex(keyIndex)
-        , m_pTrack(pTrack) {}
+        , m_pTrack(pTrack)
+    {
+    }
 
     void GetKey(IKey* pKey) const;
     float GetTime() const;
-    const CTrackViewTrack* GetTrack() const { return m_pTrack; }
+    const CTrackViewTrack* GetTrack() const
+    {
+        return m_pTrack;
+    }
 
 private:
     unsigned int m_keyIndex;
@@ -45,21 +49,37 @@ public:
     CTrackViewKeyHandle()
         : m_bIsValid(false)
         , m_keyIndex(0)
-        , m_pTrack(nullptr) {}
+        , m_pTrack(nullptr)
+    {
+    }
 
     CTrackViewKeyHandle(CTrackViewTrack* pTrack, unsigned int keyIndex)
         : m_bIsValid(true)
         , m_keyIndex(keyIndex)
-        , m_pTrack(pTrack) {}
+        , m_pTrack(pTrack)
+    {
+    }
 
     void SetKey(IKey* pKey);
     void GetKey(IKey* pKey) const;
 
-    CTrackViewTrack* GetTrack() { return m_pTrack; }
-    const CTrackViewTrack* GetTrack() const { return m_pTrack; }
+    CTrackViewTrack* GetTrack()
+    {
+        return m_pTrack;
+    }
+    const CTrackViewTrack* GetTrack() const
+    {
+        return m_pTrack;
+    }
 
-    bool IsValid() const { return m_bIsValid; }
-    unsigned int GetIndex() const { return m_keyIndex; }
+    bool IsValid() const
+    {
+        return m_bIsValid;
+    }
+    unsigned int GetIndex() const
+    {
+        return m_keyIndex;
+    }
 
     void Select(bool bSelect);
     bool IsSelected() const;
@@ -108,21 +128,31 @@ public:
 };
 
 // Represents a bundle of keys
-class CTrackViewKeyBundle
-    : public ITrackViewKeyBundle
+class CTrackViewKeyBundle : public ITrackViewKeyBundle
 {
     friend class CTrackViewTrack;
     friend class CTrackViewAnimNode;
 
 public:
     CTrackViewKeyBundle()
-        : m_bAllOfSameType(true) {}
+        : m_bAllOfSameType(true)
+    {
+    }
     virtual ~CTrackViewKeyBundle() = default;
 
-    bool AreAllKeysOfSameType() const override { return m_bAllOfSameType; }
+    bool AreAllKeysOfSameType() const override
+    {
+        return m_bAllOfSameType;
+    }
 
-    unsigned int GetKeyCount() const override { return static_cast<unsigned int>(m_keys.size()); }
-    CTrackViewKeyHandle GetKey(unsigned int index) override { return m_keys[index]; }
+    unsigned int GetKeyCount() const override
+    {
+        return static_cast<unsigned int>(m_keys.size());
+    }
+    CTrackViewKeyHandle GetKey(unsigned int index) override
+    {
+        return m_keys[index];
+    }
 
     void SelectKeys(const bool bSelected) override;
 
@@ -153,13 +183,24 @@ enum ETrackViewNodeType
 class CTrackViewNode
 {
 public:
+    AZ_CLASS_ALLOCATOR(CTrackViewNode, AZ::SystemAllocator);
+    AZ_RTTI(CTrackViewNode, "{298180CC-B577-440C-8466-A01ABC8CC00A}");
+
     CTrackViewNode(CTrackViewNode* pParent);
-    virtual ~CTrackViewNode() {}
+    virtual ~CTrackViewNode()
+    {
+    }
 
     // Name
     virtual AZStd::string GetName() const = 0;
-    virtual bool SetName([[maybe_unused]] const char* pName) { return false; };
-    virtual bool CanBeRenamed() const { return false; }
+    virtual bool SetName([[maybe_unused]] const char* pName)
+    {
+        return false;
+    };
+    virtual bool CanBeRenamed() const
+    {
+        return false;
+    }
 
     // CryMovie node type
     virtual ETrackViewNodeType GetNodeType() const = 0;
@@ -169,11 +210,20 @@ public:
     const CTrackViewSequence* GetSequenceConst() const;
 
     // Get parent
-    CTrackViewNode* GetParentNode() const { return m_pParentNode; }
+    CTrackViewNode* GetParentNode() const
+    {
+        return m_pParentNode;
+    }
 
     // Children
-    unsigned int GetChildCount() const { return static_cast<unsigned int>(m_childNodes.size()); }
-    CTrackViewNode* GetChild(unsigned int index) const { return m_childNodes[index].get(); }
+    unsigned int GetChildCount() const
+    {
+        return static_cast<unsigned int>(m_childNodes.size());
+    }
+    CTrackViewNode* GetChild(unsigned int index) const
+    {
+        return m_childNodes[index].get();
+    }
 
     // Snap time value to prev/next key in sequence
     virtual bool SnapTimeToPrevKey(float& time) const = 0;
@@ -181,7 +231,10 @@ public:
 
     // Selection state
     virtual void SetSelected(bool bSelected);
-    virtual bool IsSelected() const { return m_bSelected; }
+    virtual bool IsSelected() const
+    {
+        return m_bSelected;
+    }
 
     // Clear selection of this node and all sub nodes
     void ClearSelection();
@@ -191,9 +244,17 @@ public:
     virtual bool GetExpanded() const = 0;
 
     // Disabled state
-    virtual bool CanBeEnabled() const { return true; }
-    virtual void SetDisabled([[maybe_unused]] bool bDisabled) {}
-    virtual bool IsDisabled() const { return false; }
+    virtual bool CanBeEnabled() const
+    {
+        return true;
+    }
+    virtual void SetDisabled([[maybe_unused]] bool bDisabled)
+    {
+    }
+    virtual bool IsDisabled() const
+    {
+        return false;
+    }
 
     // Hidden state
     void SetHidden(bool bHidden);
@@ -216,7 +277,10 @@ public:
     CTrackViewNode* GetNextSibling() const;
 
     // Check if it's a group node
-    virtual bool IsGroupNode() const { return false; }
+    virtual bool IsGroupNode() const
+    {
+        return false;
+    }
 
     // Copy selected keys to XML representation for clipboard
     virtual void CopyKeysToClipboard(XmlNodeRef& xmlNode, const bool bOnlySelectedKeys, const bool bOnlyFromSelectedTracks) = 0;
@@ -237,7 +301,7 @@ protected:
     bool HasObsoleteTrackRec(const CTrackViewNode* pCurrentNode) const;
 
     CTrackViewNode* m_pParentNode;
-    std::vector<std::unique_ptr<CTrackViewNode> > m_childNodes;
+    std::vector<std::unique_ptr<CTrackViewNode>> m_childNodes;
 
     bool m_bSelected;
     bool m_bHidden;

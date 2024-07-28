@@ -369,8 +369,9 @@ namespace AZ
 
             AZ_MATH_INLINE __m128i CmpGtEq(__m128i arg1, __m128i arg2)
             {
-                const __m128i lessThan = _mm_cmplt_epi32(arg1, arg2);
-                return Not(lessThan);
+                return _mm_or_si128(
+                    _mm_cmpgt_epi32(arg1, arg2),
+                    _mm_cmpeq_epi32(arg1, arg2));
             }
 
             AZ_MATH_INLINE __m128i CmpLt(__m128i arg1, __m128i arg2)
@@ -380,8 +381,9 @@ namespace AZ
 
             AZ_MATH_INLINE __m128i CmpLtEq(__m128i arg1, __m128i arg2)
             {
-                const __m128i greaterThan = CmpGt(arg1, arg2);
-                return Not(greaterThan);
+                return _mm_or_si128(
+                    _mm_cmplt_epi32(arg1, arg2),
+                    _mm_cmpeq_epi32(arg1, arg2));
             }
 
             AZ_MATH_INLINE bool CmpAllEq(__m128i arg1, __m128i arg2, int32_t mask)

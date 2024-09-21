@@ -27,8 +27,6 @@ namespace AZ
     class Entity;
 }
 
-class ITexture;
-
 namespace AzFramework
 {
     inline constexpr AZ::s32 g_defaultSceneEntityDebugDisplayId = AZ_CRC_CE("MainViewportEntityDebugDisplayId"); // default id to draw to all viewports in the default scene

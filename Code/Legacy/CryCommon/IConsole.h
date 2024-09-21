@@ -16,7 +16,6 @@
 struct ConsoleBind;
 
 struct ICVar;
-class ITexture;
 struct ISystem;
 
 namespace AZ

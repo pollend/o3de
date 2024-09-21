@@ -150,22 +150,6 @@ void CAnimScreenFaderNode::Animate(SAnimContext& ac)
             {
                 m_lastActivatedKey = nActiveKeyIndex;
                 m_bActive = true;
-
-                if (!key.m_strTexture.empty())
-                {
-                    if (pTrack->SetActiveTexture(nActiveKeyIndex))
-                    {
-                        pTrack->SetTextureVisible(true);
-                    }
-                    else
-                    {
-                        pTrack->SetTextureVisible(false);
-                    }
-                }
-                else
-                {
-                    pTrack->SetTextureVisible(false);
-                }
             }
 
             if (m_bActive || key.m_fadeTime + key.time > ac.time)
@@ -229,7 +213,7 @@ void CAnimScreenFaderNode::Animate(SAnimContext& ac)
 
                 if (pTrack->GetDrawColor().w < 0.01f)
                 {
-                    m_bActive = IsAnyTextureVisible();
+                    m_bActive = false;
                 }
                 else
                 {
@@ -239,8 +223,7 @@ void CAnimScreenFaderNode::Animate(SAnimContext& ac)
         }
         else
         {
-            pTrack->SetTextureVisible(false);
-            m_bActive = IsAnyTextureVisible();
+            m_bActive = false;
         }
     }
 }
@@ -345,48 +328,7 @@ void CAnimScreenFaderNode::Render()
 {
 }
 
-bool CAnimScreenFaderNode::IsAnyTextureVisible() const
-{
-    size_t const paramCount = m_tracks.size();
-    for (size_t paramIndex = 0; paramIndex < paramCount; ++paramIndex)
-    {
-        CScreenFaderTrack* pTrack = static_cast<CScreenFaderTrack*>(GetTrackForParameter(AnimParamType::ScreenFader, static_cast<uint32>(paramIndex)));
-
-        if (!pTrack)
-        {
-            continue;
-        }
-
-        if (pTrack->IsTextureVisible())
-        {
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void CAnimScreenFaderNode::PrecacheTexData()
 {
-    size_t const paramCount = m_tracks.size();
-    for (size_t paramIndex = 0; paramIndex < paramCount; ++paramIndex)
-    {
-        IAnimTrack* pTrack = m_tracks[paramIndex].get();
-
-        if (!pTrack)
-        {
-            continue;
-        }
-
-        switch (m_tracks[paramIndex]->GetParameterType().GetType())
-        {
-        case AnimParamType::ScreenFader:
-        {
-            CScreenFaderTrack* pFaderTrack = static_cast<CScreenFaderTrack*>(pTrack);
-            pFaderTrack->PreloadTextures();
-        }
-        break;
-        }
-    }
     m_texPrecached = true;
 }

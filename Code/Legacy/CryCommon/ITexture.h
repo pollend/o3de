@@ -30,18 +30,3 @@ enum ETEX_Format : AZ::u8
 
 struct SDepthTexture;
 
-//////////////////////////////////////////////////////////////////////
-// Texture object interface
-class ITexture
-{
-protected:
-    virtual ~ITexture() {}
-public:
-    virtual int AddRef() = 0;
-    virtual int Release() = 0;
-    virtual int ReleaseForce() = 0;
-
-    virtual const char* GetName() const = 0;
-};
-
-//=========================================================================================

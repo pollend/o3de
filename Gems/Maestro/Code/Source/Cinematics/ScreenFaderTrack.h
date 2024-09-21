@@ -34,25 +34,16 @@ public:
     void SerializeKey(IScreenFaderKey& key, XmlNodeRef& keyNode, bool bLoading) override;
     void SetFlags(int flags) override;
 
-    void PreloadTextures();
-    ITexture* GetActiveTexture() const;
     void SetScreenFaderTrackDefaults();
 
-    bool IsTextureVisible() const {return m_bTextureVisible; };
-    void SetTextureVisible(bool bVisible){m_bTextureVisible = bVisible; };
     Vec4 GetDrawColor() const {return m_drawColor; };
     void SetDrawColor(Vec4 vDrawColor){m_drawColor = vDrawColor; };
     int GetLastTextureID() const { return m_lastTextureID; };
     void SetLastTextureID(int nTextureID){ m_lastTextureID = nTextureID; };
-    bool SetActiveTexture(int index);
 
     static void Reflect(AZ::ReflectContext* context);
 
 private:
-    void ReleasePreloadedTextures();
-
-    std::vector<ITexture*> m_preloadedTextures;
-    bool m_bTextureVisible;
     Vec4 m_drawColor;
     int m_lastTextureID;
 };

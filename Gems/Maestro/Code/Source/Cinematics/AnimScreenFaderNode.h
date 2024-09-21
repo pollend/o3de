@@ -50,8 +50,6 @@ public:
 
     void Render() override;
 
-    bool IsAnyTextureVisible() const;
-
     static void Reflect(AZ::ReflectContext* context);
 
 protected:

@@ -9,7 +9,6 @@
 
 #include <AzCore/Serialization/SerializeContext.h>
 #include "ScreenFaderTrack.h"
-#include <ITexture.h>
 
 //-----------------------------------------------------------------------------
 CScreenFaderTrack::CScreenFaderTrack()
@@ -21,7 +20,6 @@ CScreenFaderTrack::CScreenFaderTrack()
 //-----------------------------------------------------------------------------
 CScreenFaderTrack::~CScreenFaderTrack()
 {
-    ReleasePreloadedTextures();
 }
 
 //-----------------------------------------------------------------------------
@@ -85,86 +83,13 @@ void CScreenFaderTrack::SetFlags(int flags)
     if (flags & IAnimTrack::eAnimTrackFlags_Disabled)
     {
         // when we disable, 'clear' the screen fader effect to avoid the possibility of leaving the Editor in a faded state
-        m_bTextureVisible = false;
         m_drawColor = Vec4(.0f, .0f, .0f, .0f);
     }
 }
 
-//-----------------------------------------------------------------------------
-void CScreenFaderTrack::PreloadTextures()
-{
-    if (!m_preloadedTextures.empty())
-    {
-        ReleasePreloadedTextures();
-    }
-
-    const int nKeysCount = GetNumKeys();
-    if (nKeysCount > 0)
-    {
-        m_preloadedTextures.reserve(nKeysCount);
-        for (int nKeyIndex = 0; nKeyIndex < nKeysCount; ++nKeyIndex)
-        {
-            IScreenFaderKey key;
-            GetKey(nKeyIndex, &key);
-            if (!key.m_strTexture.empty())
-            {
-            }
-            else
-            {
-                m_preloadedTextures.push_back(NULL);
-            }
-        }
-    }
-}
-
-//-----------------------------------------------------------------------------
-ITexture* CScreenFaderTrack::GetActiveTexture() const
-{
-    int index = GetLastTextureID();
-    return (index >= 0 && (size_t) index < m_preloadedTextures.size()) ? m_preloadedTextures[index] : 0;
-}
-
 void CScreenFaderTrack::SetScreenFaderTrackDefaults()
 {
-    m_bTextureVisible = false;
     m_drawColor = Vec4(1, 1, 1, 1);
-}
-//-----------------------------------------------------------------------------
-void CScreenFaderTrack::ReleasePreloadedTextures()
-{
-    const size_t size = m_preloadedTextures.size();
-    for (size_t i = 0; i < size; ++i)
-    {
-        SAFE_RELEASE(m_preloadedTextures[i]);
-    }
-    m_preloadedTextures.resize(0);
-}
-
-//-----------------------------------------------------------------------------
-bool CScreenFaderTrack::SetActiveTexture(int index)
-{
-    ITexture* pTexture = GetActiveTexture();
-
-    SetLastTextureID(index);
-
-    // Check if textures should be reloaded.
-    bool bNeedTexReload = pTexture == NULL; // Not yet loaded
-    if (pTexture)
-    {
-        IScreenFaderKey key;
-        GetKey(index, &key);
-        if (strcmp(key.m_strTexture.c_str(), pTexture->GetName()) != 0)
-        {
-            bNeedTexReload = true;                // Loaded, but a different texture
-        }
-    }
-    if (bNeedTexReload)
-    {
-        // Ok, try to reload.
-        PreloadTextures();
-        pTexture = GetActiveTexture();
-    }
-    return pTexture != 0;
 }
 
 //////////////////////////////////////////////////////////////////////////

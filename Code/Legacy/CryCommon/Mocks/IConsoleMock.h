@@ -32,8 +32,6 @@ public:
     MOCK_METHOD2(ShowConsole, void(bool show, int iRequestScrollMax));
     MOCK_METHOD2(DumpCVars, void(ICVarDumpSink * pCallback, unsigned int nFlagsFilter));
     MOCK_METHOD2(CreateKeyBind, void(const char* sCmd, const char* sRes));
-    MOCK_METHOD2(SetImage, void (ITexture * pImage, bool bDeleteCurrent));
-    MOCK_METHOD0(GetImage, ITexture * ());
     MOCK_METHOD1(StaticBackground, void (bool bStatic));
     MOCK_METHOD1(SetLoadingImage, void(const char* szFilename));
     MOCK_CONST_METHOD3(GetLineNo, bool(int indwLineNo, char* outszBuffer, int indwBufferSize));

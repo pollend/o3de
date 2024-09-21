@@ -22,7 +22,6 @@
 
 #include <LmbrCentral/Rendering/TextureAsset.h>
 
-class ITexture;
 class ISprite;
 
 namespace LyShineExamples
